@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora POT · UMBRAL</title>
+<!-- V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -32,6 +33,15 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+.grid-est{grid-template-columns:1.6fr 1fr 1fr 1fr}
+.bloque-titulo{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:6px 0 8px;padding-top:10px;border-top:1px solid #e0e0e0}
+details.adv{border:1.5px solid #000;border-radius:8px;padding:0 14px;margin-bottom:14px}
+details.adv summary{cursor:pointer;padding:11px 0;font-size:12px;font-weight:700;list-style:none;display:flex;align-items:center;gap:6px}
+details.adv summary::-webkit-details-marker{display:none}
+details.adv summary::after{content:'+';margin-left:auto;font-size:16px;line-height:1}
+details.adv[open] summary::after{content:'−'}
+details.adv summary:focus-visible{outline:2px solid #000;outline-offset:2px}
+details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
 
 /* Botones */
 .btn-primary{width:100%;padding:12px;border:1.5px solid #000;border-radius:8px;background:#000;color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:6px;transition:opacity .15s}
@@ -223,6 +233,7 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
   <button class="main-tab active" onclick="setTab('lite',this)">Lite</button>
   <button class="main-tab" onclick="setTab('pro',this)">Pro</button>
   <button class="main-tab" onclick="setTab('tasador',this)">Tasador</button>
+  <button class="main-tab" onclick="setTab('terreno',this)">Mi terreno</button>
 </div>
 
 <!-- ==================== LITE ==================== -->
@@ -352,7 +363,7 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
   </div>
 
   <div class="aviso">
-    <strong>Herramienta de orientación — no reemplaza un estudio de factibilidad profesional.</strong> Costos de obra ajustados +28% por inflación acumulada 2019-2025 (Banguat). Precios de venta: medianas de 535 modelos activos <span class="ref-badge">Lab 1 UMBRAL 2025</span>. Normativa: POT COM-030-08 · COM-48-2024 (incentivos, vigente feb. 2025) · COM-29-2025 (estacionamientos, vigente jul. 2025). Todos los campos son editables.
+    <strong>Herramienta de orientación — no reemplaza un estudio de factibilidad profesional.</strong> Incluye sótano, comercialización, imprevistos, financiamiento e IVA neto (editables en "Costos del desarrollador"). Costos de obra ajustados +28% por inflación acumulada 2019-2025 (Banguat). Precios de venta: referencia conservadora de 535 modelos activos <span class="ref-badge">Lab 1 UMBRAL 2025</span>. Normativa: POT COM-030-08 · COM-48-2024 (incentivos, vigente feb. 2025) · COM-29-2025 (estacionamientos, vigente jul. 2025). Todos los campos son editables.
   </div>
 
   <div class="grid2">
@@ -459,7 +470,6 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
   </div>
   </div>
 
-  <div id="campos-sotano-manual">
   <div class="grid2">
     <div class="field-group">
       <label class="field-label">Área amenidades (m²) <span class="help-icon" data-help="p-am" onclick="showHelp('p-am',event)">?</span></label>
@@ -471,6 +481,38 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
       <input type="number" class="field-input" id="p-alt" value="3.0" min="2.4" step="0.1">
     </div>
   </div>
+
+  <div class="bloque-titulo">Estacionamientos <span class="help-icon" data-help="est-diseno" onclick="showHelp('est-diseno',event)">?</span></div>
+  <div class="grid4 grid-est">
+    <div class="field-group">
+      <label class="field-label">Parqueos por apto.</label>
+      <select class="field-input" id="p-pu">
+        <option value="1" selected>1 por apartamento</option>
+        <option value="1.5">Mitad con 1, mitad con 2</option>
+        <option value="2">2 por apartamento</option>
+        <option value="3">3 por apartamento</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Plazas visitas</label>
+      <input type="number" class="field-input" id="p-pv" placeholder="Norma" min="0">
+      <div class="field-help">Vacío = norma</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">m² por plaza</label>
+      <input type="number" class="field-input" id="p-m2p" value="30" min="20" max="45">
+      <div class="field-help">Incluye rampas</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Sótano USD/m²</label>
+      <input type="number" class="field-input" id="p-csot" value="700" min="300">
+      <div class="field-help">Provisional</div>
+    </div>
+  </div>
+  <div class="field-help" style="margin:-6px 0 14px">Se usa lo que sea mayor entre tu diseño y el mínimo municipal. El sótano nunca ocupa el área permeable.</div>
+
+  <div id="campos-sotano-manual">
+  <div class="field-help" style="margin-bottom:6px">Opcional: si ya tenés sótano diseñado, declaralo. Dejá 0 para que se calcule automáticamente.</div>
   <div class="grid2">
     <div class="field-group">
       <label class="field-label">Sótanos (niveles) <span class="help-icon" data-help="p-so" onclick="showHelp('p-so',event)">?</span></label>
@@ -501,6 +543,48 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
       <div class="field-help">Ref: 12-15%</div>
     </div>
   </div>
+
+
+  <details class="adv">
+    <summary>Costos del desarrollador <span class="help-icon" data-help="dev-costos" onclick="showHelp('dev-costos',event)">?</span></summary>
+    <div class="adv-body">
+      <div class="grid3">
+        <div class="field-group">
+          <label class="field-label">Comercialización (%)</label>
+          <input type="number" class="field-input" id="p-com" value="4" min="0" max="10" step="0.5">
+          <div class="field-help">Sobre ventas · ref. 3-5%</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Imprevistos (%)</label>
+          <input type="number" class="field-input" id="p-imp" value="5" min="0" max="15" step="0.5">
+          <div class="field-help">Sobre obra · ref. 3-5%</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">IVA</label>
+          <select class="field-input" id="p-iva">
+            <option value="si" selected>Calcular IVA neto</option>
+            <option value="no">No incluir</option>
+          </select>
+          <div class="field-help">Precio de venta con IVA</div>
+        </div>
+      </div>
+      <div class="grid3">
+        <div class="field-group">
+          <label class="field-label">Tasa anual (%)</label>
+          <input type="number" class="field-input" id="p-ftasa" value="9" min="0" max="25" step="0.5">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Plazo obra (meses)</label>
+          <input type="number" class="field-input" id="p-fplazo" value="24" min="0" max="72">
+        </div>
+        <div class="field-group">
+          <label class="field-label">% financiado</label>
+          <input type="number" class="field-input" id="p-fpct" value="70" min="0" max="100">
+          <div class="field-help">0 = capital propio</div>
+        </div>
+      </div>
+    </div>
+  </details>
 
   <div style="display:flex;gap:0;border:1.5px solid #000;border-radius:8px;overflow:hidden;width:fit-content;margin-bottom:10px">
     <span class="help-icon" data-help="escenario-base" onclick="showHelp('escenario-base',event)" style="margin-right:6px">?</span><button id="btn-esc-base" onclick="setEscenario('base')" style="padding:7px 20px;font-size:12px;font-weight:700;font-family:inherit;background:#000;color:#fff;border:none;cursor:pointer">Escenario base</button>
@@ -575,7 +659,7 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
   <!-- Toggle modo Tasador -->
   <div style="display:flex;gap:0;border:1.5px solid #000;border-radius:100px;overflow:hidden;width:fit-content;margin-bottom:14px">
     <span class="help-icon" data-help="modo-vendedor" onclick="showHelp('modo-vendedor',event)" style="margin-right:6px">?</span><button id="btn-tas-dev" onclick="setModoTas('dev')" style="padding:8px 22px;font-size:12px;font-weight:700;font-family:inherit;background:#000;color:#fff;border:none;cursor:pointer;letter-spacing:.01em">Soy desarrollador</button>
-    <button id="btn-tas-vend" onclick="setModoTas('vend')" style="padding:8px 22px;font-size:12px;font-weight:700;font-family:inherit;background:#fff;color:#000;border:none;cursor:pointer;letter-spacing:.01em">Quiero vender mi terreno</button>
+    <button id="btn-tas-vend" onclick="irATerreno()" style="padding:8px 22px;font-size:12px;font-weight:700;font-family:inherit;background:#fff;color:#000;border:none;cursor:pointer;letter-spacing:.01em">Quiero vender mi terreno</button>
   </div>
 
   <div class="aviso">
@@ -649,7 +733,19 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
     <div class="field-group">
       <label class="field-label">Margen objetivo dev. (%) <span class="help-icon" data-help="t-margen" onclick="showHelp('t-margen',event)">?</span></label>
       <input type="number" class="field-input" id="t-margen" value="25" min="5" max="50">
-      <div class="field-help">Ref. mercado GT: 25-30% sobre inversión total.</div>
+      <div class="field-help">Sobre inversión total (terreno + costos) · ref. GT 25-30%. A mayor margen, menor valor del terreno.</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="field-group">
+      <label class="field-label">Ancho del terreno (m)</label>
+      <input type="number" class="field-input" id="t-ancho" placeholder="Ej. 20" min="5" oninput="if(MODO_TAS==='vend')calcProgramaVend()">
+      <div class="field-help">Para calcular sótano automáticamente si el proyecto lo requiere.</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Largo del terreno (m)</label>
+      <input type="number" class="field-input" id="t-largo" placeholder="Ej. 25" min="10" oninput="if(MODO_TAS==='vend')calcProgramaVend()">
     </div>
   </div>
 
@@ -674,18 +770,6 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
       </select>
     </div>
   </div>
-  <div class="grid2">
-    <div class="field-group">
-      <label class="field-label">Ancho del terreno (m)</label>
-      <input type="number" class="field-input" id="t-ancho" placeholder="Ej. 20" min="5">
-      <div class="field-help">Para calcular sótano automáticamente si el proyecto lo requiere.</div>
-    </div>
-    <div class="field-group">
-      <label class="field-label">Largo del terreno (m)</label>
-      <input type="number" class="field-input" id="t-largo" placeholder="Ej. 25" min="10">
-    </div>
-  </div>
-
   <div class="grid3">
     <div class="field-group">
       <label class="field-label">Costo obra (USD/m²)</label>
@@ -707,7 +791,7 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
 
   <!-- Campos modo vendedor -->
   <div id="tas-campos-vend" style="display:none">
-    <div class="grid2">
+    <div>
       <div class="field-group">
         <label class="field-label">Tipo de proyecto más probable</label>
         <select class="field-input" id="t-tipo-vend" onchange="calcProgramaVend()">
@@ -717,17 +801,83 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
         </select>
         <div class="field-help">¿No sabés cuál elegir? Dejá "Estándar" — es el más común en Ciudad de Guatemala según Lab 1 2025.</div>
       </div>
-      <div class="field-group">
-        <label class="field-label">Margen objetivo del desarrollador (%)</label>
-        <input type="number" class="field-input" id="t-margen-vend" value="25" min="10" max="40">
-        <div class="field-help">Ref. mercado GT: 25-30%. A mayor margen exigido, menor el valor que puede pagar por el terreno.</div>
-      </div>
     </div>
     <div id="resultado-vend-auto" style="display:none;background:#f5f5f5;border:1.5px solid #000;border-radius:8px;padding:11px 14px;margin-bottom:12px;font-size:12px;line-height:1.7;color:#000">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Programa estimado para tu terreno</div>
       <div id="texto-vend-auto"></div>
     </div>
   </div><!-- /tas-campos-vend -->
+
+  <div class="bloque-titulo">Estacionamientos <span class="help-icon" data-help="est-diseno" onclick="showHelp('est-diseno',event)">?</span></div>
+  <div class="grid4 grid-est">
+    <div class="field-group">
+      <label class="field-label">Parqueos por apto.</label>
+      <select class="field-input" id="t-pu">
+        <option value="1" selected>1 por apartamento</option>
+        <option value="1.5">Mitad con 1, mitad con 2</option>
+        <option value="2">2 por apartamento</option>
+        <option value="3">3 por apartamento</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Plazas visitas</label>
+      <input type="number" class="field-input" id="t-pv" placeholder="Norma" min="0">
+      <div class="field-help">Vacío = norma</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">m² por plaza</label>
+      <input type="number" class="field-input" id="t-m2p" value="30" min="20" max="45">
+      <div class="field-help">Incluye rampas</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Sótano USD/m²</label>
+      <input type="number" class="field-input" id="t-csot" value="700" min="300">
+      <div class="field-help">Provisional</div>
+    </div>
+  </div>
+  <div class="field-help" style="margin:-6px 0 14px">Se usa lo que sea mayor entre tu diseño y el mínimo municipal. El sótano nunca ocupa el área permeable.</div>
+
+  <details class="adv">
+    <summary>Costos del desarrollador <span class="help-icon" data-help="dev-costos" onclick="showHelp('dev-costos',event)">?</span></summary>
+    <div class="adv-body">
+      <div class="grid3">
+        <div class="field-group">
+          <label class="field-label">Comercialización (%)</label>
+          <input type="number" class="field-input" id="t-com" value="4" min="0" max="10" step="0.5">
+          <div class="field-help">Sobre ventas · ref. 3-5%</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Imprevistos (%)</label>
+          <input type="number" class="field-input" id="t-imp" value="5" min="0" max="15" step="0.5">
+          <div class="field-help">Sobre obra · ref. 3-5%</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">IVA</label>
+          <select class="field-input" id="t-iva">
+            <option value="si" selected>Calcular IVA neto</option>
+            <option value="no">No incluir</option>
+          </select>
+          <div class="field-help">Precio de venta con IVA</div>
+        </div>
+      </div>
+      <div class="grid3">
+        <div class="field-group">
+          <label class="field-label">Tasa anual (%)</label>
+          <input type="number" class="field-input" id="t-ftasa" value="9" min="0" max="25" step="0.5">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Plazo obra (meses)</label>
+          <input type="number" class="field-input" id="t-fplazo" value="24" min="0" max="72">
+        </div>
+        <div class="field-group">
+          <label class="field-label">% financiado</label>
+          <input type="number" class="field-input" id="t-fpct" value="70" min="0" max="100">
+          <div class="field-help">0 = capital propio</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
 
   <button class="btn-primary" onclick="calcTasador()">Calcular valor máximo del terreno</button>
 
@@ -765,75 +915,242 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:#fff;color
   <div id="t-placeholder" class="placeholder-text">Completá zona G, área, unidades y precio de venta para ver el cálculo.</div>
 </div>
 
+
+<!-- ==================== MI TERRENO (modo simple para dueños) ==================== -->
+<div id="panel-terreno" style="display:none">
+  <div class="box-info">
+    <strong>¿Cuánto podría pagarte un desarrollador por tu terreno?</strong> Con tres datos te damos un rango aproximado, usando el mismo cálculo que un desarrollador: lo que venderían los apartamentos, menos lo que cuesta construirlos, menos su ganancia. Lo que queda es lo que puede pagar por el terreno.
+  </div>
+  <div class="grid2">
+    <div class="field-group">
+      <label class="field-label">Zona G de tu terreno <span class="help-icon" data-help="l-zona" onclick="showHelp('l-zona',event)">?</span></label>
+      <select class="field-input" id="m-g">
+        <option value="">Elegí la zona G</option>
+        <option value="G1">G1 Rural</option>
+        <option value="G2">G2 Semiurbana</option>
+        <option value="G3">G3 Urbana</option>
+        <option value="G4">G4 Central</option>
+        <option value="G5">G5 Núcleo</option>
+      </select>
+      <button class="btn-secondary" style="margin-top:6px" onclick="window.open('https://mapa-pot.umbralgt.com','_blank')">
+        <span>No sé mi zona G · ver mapa POT</span><span>↗</span>
+      </button>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Zona postal</label>
+      <select class="field-input" id="m-zp">
+        <option value="">Elegí la zona</option>
+        <option value="z01">Zona 1</option>
+        <option value="z02">Zona 2</option>
+        <option value="z04">Zona 4</option>
+        <option value="z05">Zona 5</option>
+        <option value="z06">Zona 6</option>
+        <option value="z07">Zona 7</option>
+        <option value="z09">Zona 9 (est.)</option>
+        <option value="z10">Zona 10</option>
+        <option value="z11">Zona 11</option>
+        <option value="z12">Zona 12</option>
+        <option value="z13">Zona 13</option>
+        <option value="z14">Zona 14</option>
+        <option value="z15">Zona 15</option>
+        <option value="z16">Zona 16</option>
+        <option value="z17">Zona 17</option>
+        <option value="z18">Zona 18</option>
+        <option value="z21">Zona 21</option>
+      </select>
+      <div class="field-help">Define el precio de venta de los apartamentos de la zona.</div>
+    </div>
+  </div>
+  <div class="field-group">
+    <label class="field-label">Área del terreno <span class="help-icon" data-help="t-area" onclick="showHelp('t-area',event)">?</span></label>
+    <div class="grid2">
+      <div><input type="number" class="field-input" id="m-area" placeholder="m²" min="50" oninput="syncVarasM('m2')"><div class="field-help">Metros cuadrados</div></div>
+      <div><input type="number" class="field-input" id="m-area-v2" placeholder="v²" min="50" oninput="syncVarasM('v2')"><div class="field-help">o varas cuadradas</div></div>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="calcTerreno()">Ver cuánto podría valer</button>
+
+  <div id="m-resultado" style="display:none">
+    <div class="sep"></div>
+    <div class="result-big" id="m-big"></div>
+    <div class="box-info" id="m-explica"></div>
+    <div id="m-mercado"></div>
+    <div class="result-section" style="margin-top:14px">
+      <div class="result-label">Depende del proyecto que haga el desarrollador</div>
+      <div id="m-escenarios"></div>
+    </div>
+    <details class="adv">
+      <summary>Qué supuestos usamos</summary>
+      <div class="adv-body" id="m-supuestos" style="font-size:12px;line-height:1.7"></div>
+    </details>
+    <button class="btn-secondary" onclick="abrirEnTasador()"><span>Afinar el cálculo en el Tasador</span><span>→</span></button>
+    <div class="note-text" style="margin-top:10px">Orientación, no avalúo. Un desarrollador normalmente ofrece por debajo de este techo para tener margen de negociación. Para transacciones formales consultá a un valuador registrado.</div>
+  </div>
+  <div id="m-placeholder" class="placeholder-text">Elegí la zona G, la zona postal y el área de tu terreno.</div>
+</div>
+
 </div><!-- /calc-wrap -->
 
 <script>
 // ==================== DATOS ====================
-// Tabla de plazas de estacionamiento por nivel de sótano
-// según dimensiones del terreno (módulos de 5m)
-// Fuente: calculadora de pre-dimensionamiento de sótanos UMBRAL
-const TABLA_SOTANO = {
-  '15x30':{norm:8,tand:0,total:8},
-  '15x35':{norm:14,tand:0,total:14},
-  '15x40':{norm:20,tand:0,total:20},
-  '20x30':{norm:20,tand:0,total:20},
-  '20x35':{norm:26,tand:0,total:26},
-  '20x40':{norm:32,tand:0,total:32},
-  '20x45':{norm:30,tand:6,total:36},
-  '25x30':{norm:20,tand:12,total:32},
-  '25x35':{norm:26,tand:12,total:38},
-  '25x40':{norm:32,tand:12,total:44},
-  '25x45':{norm:30,tand:16,total:46},
-  '30x30':{norm:24,tand:0,total:24},
-  '30x35':{norm:36,tand:0,total:36},
-  '30x40':{norm:48,tand:0,total:48},
-  '30x45':{norm:48,tand:12,total:60},
-  '35x30':{norm:36,tand:0,total:36},
-  '35x35':{norm:48,tand:0,total:48},
-  '35x40':{norm:60,tand:0,total:60},
-  '35x45':{norm:60,tand:12,total:72},
-  '40x35':{norm:48,tand:12,total:60},
-  '40x40':{norm:60,tand:12,total:72},
-  '40x45':{norm:60,tand:24,total:84},
-  '40x50':{norm:60,tand:36,total:96},
-};
+// ==================== MOTOR ÚNICO DE PROYECTO · V10 ====================
+// Pro, Explorar, Tasador y escenarios del vendedor usan estas mismas funciones,
+// así los números siempre cuadran entre pestañas.
 
-// Costo de sótano por m² según zona G
-// Mayor al costo de obra normal por excavación + estructura especial
-// Factor aplicado sobre costo de obra declarado por usuario
-const COSTO_SOTANO_FACTOR = {G1:1.5,G2:1.5,G3:1.6,G4:1.7,G5:1.8};
-// En zonas más densas (G4/G5) la excavación es más cara por
-// profundidad, contención de predios vecinos y acceso limitado
+const IVA_TASA = 0.12; // IVA Guatemala (SAT) — primera venta de inmueble nuevo
 
-function calcSotano(ancho, largo, plazasNecesarias){
-  // Redondear a módulo de 5m (hacia abajo, como hace la calc original)
-  const a = Math.floor(ancho/5)*5;
-  const l = Math.floor(largo/5)*5;
-  // Verificar si está en rango de la tabla
-  if(a < 15 || l < 30) return {factible:false,motivo:'terreno_chico',niveles:0,plazasPorNivel:0,tieneTandem:false};
-  if(a > 40 || l > 50) return {factible:true,motivo:'fuera_tabla',niveles:null,plazasPorNivel:null,tieneTandem:false};
-  // Buscar en tabla
-  let dat = TABLA_SOTANO[`${a}x${l}`] || null;
-  if(!dat){
-    // Interpolación hacia abajo
-    const as=[15,20,25,30,35,40].filter(x=>x<=a);
-    const ls=[30,35,40,45,50].filter(x=>x<=l);
-    if(as.length&&ls.length) dat=TABLA_SOTANO[`${as[as.length-1]}x${ls[ls.length-1]}`]||null;
-  }
-  if(!dat) return {factible:false,motivo:'sin_datos',niveles:0,plazasPorNivel:0,tieneTandem:false};
-  const plazasPorNivel = dat.total;
-  const nivelesNecesarios = Math.ceil(plazasNecesarias / plazasPorNivel);
+function leerNum(id, def){
+  const el=document.getElementById(id);
+  if(!el || el.value==='' ) return def;
+  const v=parseFloat(el.value);
+  return isNaN(v)?def:v;
+}
+
+// Supuestos del desarrollador (prefijo 'p' = Pro, 't' = Tasador)
+function leerDev(px){
   return {
-    factible: true,
-    motivo: 'ok',
-    niveles: nivelesNecesarios,
-    plazasPorNivel: plazasPorNivel,
-    plazasTotal: plazasPorNivel * nivelesNecesarios,
-    tieneTandem: dat.tand > 0,
-    tandPorNivel: dat.tand,
-    anchoReal: a,
-    largoReal: l
+    com:     leerNum(px+'-com',4),     // % comercialización sobre ventas
+    imp:     leerNum(px+'-imp',5),     // % imprevistos sobre obra
+    finTasa: leerNum(px+'-ftasa',9),   // % tasa anual
+    finMeses:leerNum(px+'-fplazo',24), // meses de obra financiados
+    finPct:  leerNum(px+'-fpct',70),   // % del costo financiado
+    iva:     (document.getElementById(px+'-iva')||{}).value||'si'
   };
+}
+
+// Parámetros según escenario
+function paramsEscenario(zonaG, esc){
+  const g=POT[zonaG];
+  const esMax = esc==='max' && (zonaG==='G4'||zonaG==='G5') && !!g.ie_max;
+  const esMedio = esc==='max' && !esMax;
+  return {g, esMax, esMedio,
+    ie:  esMax?g.ie_max : esMedio?g.ie_a : g.ie,
+    alt: esMax?g.alt_max: esMedio?g.alt_a: g.alt};
+}
+
+// Estacionamientos: mínimo normativo vs. diseño elegido por el usuario.
+// Cada componente nunca queda por debajo de la norma.
+function estacionamientos(o){
+  const esZonaAlta = o.zonaG==='G3'||o.zonaG==='G4'||o.zonaG==='G5';
+  // COM-03-2009 (ratios trabajados en versiones anteriores) · VERIFICAR vigencia con COM-29-2025
+  const normRes = esZonaAlta ? Math.ceil(o.m2R/300) : Math.ceil(o.m2R/100);
+  const normVis = Math.max(1, Math.ceil(o.nu/4));
+  const am = o.am>0 ? Math.ceil(o.am/75) : 0; // COM-29-2025: 1 c/75 m² áreas sociales
+  const disRes = Math.ceil(o.nu*o.plazasU);
+  const disVis = (o.visitas!=null && o.visitas>=0) ? o.visitas : normVis;
+  const res = Math.max(normRes, disRes);
+  const vis = Math.max(normVis, disVis);
+  return {normRes, normVis, am, norma:normRes+normVis+am,
+          disRes, disVis, res, vis, total:res+vis+am};
+}
+
+// Sótano por plazas × m²/plaza. Nunca ocupa el área permeable mínima.
+function calcSotanoV10(o){
+  const permMin = o.area*o.perm;
+  const areaNivelMax = o.area*(1-o.perm);
+  const areaLibre = o.permiteSup ? Math.max(0, o.area - o.huella - permMin) : 0;
+  const sup = Math.floor(areaLibre/o.m2Plaza);
+  const avisos=[];
+  if(o.ancho>0 && o.largo>0 && Math.min(o.ancho,o.largo)<15) avisos.push('angosto');
+
+  if(o.nivDecl>0){ // sótano declarado por el usuario
+    const aDecl = o.areaDecl>0 ? o.areaDecl : areaNivelMax;
+    const excedePerm = aDecl > areaNivelMax + 0.5;
+    const aN = Math.min(aDecl, areaNivelMax);
+    const plazasSot = o.nivDecl*Math.floor(aN/o.m2Plaza);
+    const plazasSup = Math.min(sup, Math.max(0,o.plazas-plazasSot));
+    return {modo:'declarado', niveles:o.nivDecl, areaNivel:aN, m2Sot:aN*o.nivDecl,
+            plazasSot, plazasSup, capacidad:plazasSot+sup,
+            suficiente:plazasSot+sup>=o.plazas, excedePerm, avisos};
+  }
+  if(sup>=o.plazas){
+    return {modo:'superficie', niveles:0, m2Sot:0, plazasSot:0, plazasSup:o.plazas,
+            capacidad:sup, suficiente:true, excedePerm:false, avisos};
+  }
+  const plazasSot = o.plazas - sup;
+  const porNivel = Math.floor(areaNivelMax/o.m2Plaza);
+  if(porNivel<1){
+    return {modo:'inviable', niveles:0, m2Sot:0, plazasSot:0, plazasSup:sup,
+            capacidad:sup, suficiente:false, excedePerm:false, avisos};
+  }
+  const niveles = Math.ceil(plazasSot/porNivel);
+  if(niveles>4) avisos.push('muchos_niveles');
+  return {modo:'auto', niveles, areaNivel:areaNivelMax, porNivel,
+          m2Sot:plazasSot*o.m2Plaza, plazasSot, plazasSup:sup,
+          capacidad:sup+niveles*porNivel, suficiente:true, excedePerm:false, avisos};
+}
+
+// Costos completos sin terreno (incluye costos del desarrollador)
+function costosProyecto(o){
+  const obraSup = o.m2T*o.cm2;
+  const obraSot = o.sot.m2Sot*o.cSot;
+  const obra = obraSup+obraSot;
+  const cDi = obra*o.di/100, cAd = obra*o.ad/100, cIns = obra*o.ins/100;
+  const cImp = obra*o.dev.imp/100;
+  const cUrb = o.area*18;
+  const licE = Math.round(o.m2T*2.5*({G1:.8,G2:.9,G3:1,G4:1.2,G5:1.4}[o.zonaG]||1));
+  const m2Inc = o.esMax ? Math.max(0, o.m2T - o.area*POT[o.zonaG].ie) : 0;
+  const cCau = Math.round(m2Inc*o.cm2*0.05);
+  const cCom = o.ventas*o.dev.com/100;
+  const baseFin = obra+cDi+cAd+cIns+cImp+cUrb+licE+cCau;
+  // Saldo promedio ~50% durante el plazo (desembolso progresivo). El terreno se asume con capital propio.
+  const cFin = baseFin*(o.dev.finPct/100)*(o.dev.finTasa/100)*(o.dev.finMeses/12)*0.5;
+  let ivaDeb=0, ivaCred=0, cIva=0;
+  if(o.dev.iva==='si' && o.ventas>0){
+    ivaDeb  = o.ventas*IVA_TASA/(1+IVA_TASA);                    // IVA incluido en el precio de venta
+    ivaCred = (obra+cDi+cAd+cIns+cImp+cCom)*IVA_TASA/(1+IVA_TASA); // crédito fiscal de costos facturados
+    cIva = Math.max(0, ivaDeb-ivaCred);
+  }
+  const total = baseFin+cCom+cFin+cIva;
+  return {obraSup, obraSot, obra, cDi, cAd, cIns, cImp, cUrb, licE, cCau, m2Inc,
+          cCom, cFin, ivaDeb, ivaCred, cIva, total};
+}
+
+// Programa automático: respeta IE del escenario Y la altura
+function programaAuto(zonaG, area, tipoU, esc, altPT, ci){
+  const p = paramsEscenario(zonaG, esc);
+  const nMax = Math.max(1, Math.floor(p.alt/altPT));
+  const huellaMax = area*(1-p.g.perm)*0.85;
+  const m2TporIE = area*p.ie;
+  const m2TporAlt = huellaMax*nMax;
+  const limitaAltura = m2TporAlt < m2TporIE;
+  const m2Tmax = Math.min(m2TporIE, m2TporAlt);
+  const unidades = Math.floor(m2Tmax/(1+ci)/tipoU); // 0 = no cabe ni una unidad
+  const m2R = unidades*tipoU, m2T = m2R*(1+ci);
+  const niveles = Math.ceil(m2T/Math.max(huellaMax,1));
+  return {p, unidades, m2R, m2T, niveles, nMax, huellaMax, limitaAltura};
+}
+
+// Proyecto completo (lo usan Pro y Tasador)
+function evaluarProyecto(o){
+  // o: zonaG, esc, area, ancho, largo, nu, au, ci, cm2, di, ad, ins, altPT, am,
+  //    plazasU, visitas, m2Plaza, cSot, nivDecl, areaDecl, pv, dev
+  const P = paramsEscenario(o.zonaG, o.esc);
+  const g = P.g;
+  const m2R = o.nu*o.au;
+  const m2T = m2R*(1+o.ci/100);
+  const m2E = o.area*P.ie;
+  const nMax = Math.max(1, Math.floor(P.alt/o.altPT));
+  const huellaMax = o.area*(1-g.perm);
+  const huella = m2T/nMax;
+  const est = estacionamientos({zonaG:o.zonaG, nu:o.nu, m2R, am:o.am, plazasU:o.plazasU, visitas:o.visitas});
+  const sot = calcSotanoV10({area:o.area, perm:g.perm, huella:Math.min(huella,huellaMax),
+    plazas:est.total, m2Plaza:o.m2Plaza, ancho:o.ancho, largo:o.largo,
+    nivDecl:o.nivDecl||0, areaDecl:o.areaDecl||0,
+    permiteSup: o.zonaG==='G1'||o.zonaG==='G2'||o.zonaG==='G3'});
+  const ventas = o.pv ? m2R*o.pv : 0;
+  const C = costosProyecto({zonaG:o.zonaG, area:o.area, m2T, cm2:o.cm2, di:o.di, ad:o.ad, ins:o.ins,
+    sot, cSot:o.cSot, esMax:P.esMax, dev:o.dev, ventas});
+  return {P, g, m2R, m2T, m2E, nMax, huella, huellaMax, est, sot, ventas, C,
+          cumIE: m2T <= m2E+0.5,
+          cumAlt: huella <= huellaMax+0.5,
+          nivNec: Math.ceil(m2T/Math.max(huellaMax,1))};
+}
+
+// Valor residual: el desarrollador exige margen sobre INVERSIÓN TOTAL (terreno + costos)
+// Ventas = (Terreno + Costos) × (1 + m)  →  Terreno = Ventas/(1+m) − Costos
+function valorResidual(ventas, costosSinTerreno, margenPct){
+  return Math.max(0, ventas/(1+margenPct/100) - costosSinTerreno);
 }
 
 
@@ -850,11 +1167,13 @@ const POT = {
   G5:{ie:6.0, ie_a:9.0,  ie_max:11.0, alt:64,  alt_a:96,  alt_max:128,  perm:.00,bs:16,sepBS:5,fDCT:21,aDCT:600, nom:'Núcleo'} // ie_max:11.0 según COM-48-2024 — verificar texto oficial con DCT
 };
 
-// Precios venta apartamentos Lab 1 UMBRAL (mediana USD/m², 535 modelos activos 2025)
+// Precios venta apartamentos Lab 1 UMBRAL (USD/m², 2025)
+// V10: se usa el MENOR de los dos cortes de Lab 1 por zona (criterio conservador:
+// son precios de lista y el cierre suele ser menor). LAB1_ZONA.pm2_med queda solo como referencia.
 const LAB1_VENTA = {
-  z01:1771,z02:1935,z04:2601,z05:2705,z06:1458,z07:1695,z09:2100,
-  z10:2778,z11:2368,z12:2078,z13:2473,z14:2533,z15:2840,z16:2200,z17:1630,z18:1055,
-  z21:1191 // Lab 1: 3 proyectos Zona 21
+  z01:1771,z02:1935,z04:2601,z05:2705,z06:1394,z07:1695,z09:2040,
+  z10:2778,z11:2292,z12:2055,z13:2473,z14:2533,z15:2840,z16:2079,z17:1630,z18:1055,
+  z21:1191
 };
 
 // Renta de referencia (USD/m²/mes, Lab 1 UMBRAL 2025)
@@ -916,7 +1235,7 @@ const SM = {q:4252.28, usd:557, fuente:'Mintrab · AG 256-2025 · ene 2026'};
 const TC = 7.625; // Q/USD referencia Banguat 2026
 
 const CONTEXTO_G = {
-  G1:{titulo:'G1 — Zona rural o de muy baja densidad',texto:'El POT define G1 como zona de densidad mínima. Con IE base de 1.2 y permeabilidad exigida del 70%, la normativa no está diseñada para densificación. Un proyecto multifamiliar aquí raramente es viable financieramente. Mejor uso: vivienda unifamiliar o lote de reserva.',color:'#7bc142'},
+  G1:{titulo:'G1 — Zona rural o de muy baja densidad',texto:'G1 forma parte del Cinturón Ecológico Metropolitano y se rige por su propio reglamento (parámetros de esta calculadora: provisionales). No está pensada para densificar. En predios con varias zonas G, la edificabilidad de las franjas G1/G2 normalmente se traslada a la parte G3-G5 del predio — verificar con la DCT.',color:'#7bc142'},
   G2:{titulo:'G2 — Zona semiurbana',texto:'G2 marca la transición entre lo rural y lo urbano. IE 1.8, permeabilidad 40%. Permite vivienda unifamiliar o dúplex. En Ciudad de Guatemala suelen ser zonas periféricas en proceso de urbanización. El precio del suelo refleja ese potencial limitado.',color:'#b8d84a'},
   G3:{titulo:'G3 — Zona urbana consolidada',texto:'G3 es donde el POT imagina la densificación equilibrada. IE 2.7, altura 16m, permeabilidad mínima del 10%. Permite proyectos de 4-8 niveles. La mayoría de desarrollos residenciales activos en Ciudad de Guatemala están en zonas G3. Dato clave: los sótanos NO computan en el IE (COM-030-08, Art.46: límite 1.20m sobre nivel natural del terreno).',color:'#f5d800'},
   G4:{titulo:'G4 — Zona de alta densidad',texto:'G4 permite IE base 4.0 y altura base 32m. Con incentivos estándar: IE 6.0 y altura 48m. Con escenario maximizado (COM-48-2024, aportación urbanística + JOT): IE hasta 9.0 y altura hasta 96m. La altura real puede ser menor por restricciones DGAC — verificar por ubicación. Según reforma 2025 al reglamento de estacionamientos: estacionamientos ≤50% del proyecto podrían no computar en IE hasta dic. 2030 — verificar aplicación con DCT. Sótanos no computan en IE (COM-030-08, Art.46).',color:'#f5941d'},
@@ -1006,7 +1325,7 @@ function showCtxUrb(zonaG, zonaP, nu, au, m2T, estT, costoSotano, cT){
   const zpNum=parseInt((zonaP||'').replace('z',''));
   const lab1=LAB1_ZONA[zpNum];
   const ter=TERRENO_REF[zonaP]||null;
-  const pm2v=LAB1_VENTA[zpNum]||null;
+  const pm2v=LAB1_VENTA[zonaP]||null;
   const personas=Math.round(nu*3.2);
   const viajesDia=Math.round(nu*6);
   const costoEstXU=costoSotano>0?Math.round(costoSotano/nu):0;
@@ -1029,12 +1348,12 @@ function showCtxUrb(zonaG, zonaP, nu, au, m2T, estT, costoSotano, cT){
   </div>`;
 
   if(precioUnidad && aniosSalario && ter){
-    const pm2TerMinV2=Math.round(ter.min*1.43115);
-    const pm2TerMaxV2=Math.round(ter.max*1.43115);
+    const pm2TerMinV2=Math.round(ter.min/V2_POR_M2);
+    const pm2TerMaxV2=Math.round(ter.max/V2_POR_M2);
     html+=`<div style="border:1.5px solid #000;border-radius:8px;padding:11px 13px;margin-bottom:10px;font-size:12px;line-height:1.7;color:#000">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px">Valor y precio en contexto</div>
       Una unidad de ${au} m² tiene un precio de referencia de mercado de <strong>$${precioUnidad.toLocaleString('es-GT')}</strong>. Al salario mínimo vigente en Guatemala 2026 (Q4,252/mes · Mintrab), equivale a <strong>~${aniosSalario} años</strong> de ingreso bruto total.<br><br>
-      Los terrenos en esta zona se transan entre <strong>$${ter.min.toLocaleString('es-GT')}-$${ter.max.toLocaleString('es-GT')}/m²</strong> (${pm2TerMinV2}-${pm2TerMaxV2} v²) según portales activos 2024-2025. El precio que un comprador paga por el terreno y el valor que ese terreno puede generar son dos números distintos — ambos importan para una negociación informada.
+      Los terrenos en esta zona se transan entre <strong>$${ter.min.toLocaleString('es-GT')}-$${ter.max.toLocaleString('es-GT')}/m²</strong> ($${pm2TerMinV2}-$${pm2TerMaxV2}/v²) según portales activos 2024-2025. El precio que un comprador paga por el terreno y el valor que ese terreno puede generar son dos números distintos — ambos importan para una negociación informada.
     </div>`;
   } else if(precioUnidad && aniosSalario){
     html+=`<div style="border:1.5px solid #000;border-radius:8px;padding:11px 13px;margin-bottom:10px;font-size:12px;line-height:1.7;color:#000">
@@ -1096,90 +1415,46 @@ function syncTipoUnidad(){
 
 function calcProgramaAuto(){
   const zonaG = document.getElementById('p-g').value;
-  const area = parseFloat(document.getElementById('p-area').value)||0;
-  const ancho = parseFloat(document.getElementById('p-ancho').value)||0;
-  const largo = parseFloat(document.getElementById('p-largo').value)||0;
+  const area = leerNum('p-area',0);
   const tipoU = parseInt(document.getElementById('p-tipo-u').value)||80;
-  const uso = document.getElementById('p-uso-exp').value;
   const resDiv = document.getElementById('resultado-explorar');
   const textoDiv = document.getElementById('texto-explorar');
+  if(!zonaG || !area){ resDiv.style.display='none'; return; }
 
-  if(!zonaG || !area){
-    resDiv.style.display='none';
-    return;
+  const altPT = leerNum('p-alt',3)||3;
+  const pr = programaAuto(zonaG, area, tipoU, ESCENARIO_PRO, altPT, 0.20);
+  if(pr.unidades<1){
+    document.getElementById('p-nu').value='';
+    textoDiv.innerHTML=`El terreno es muy pequeño para unidades de ${tipoU} m² en ${zonaG} (caben ~${fmt(pr.m2T)} m² construibles). Probá con unidades más pequeñas o analizalo como vivienda unifamiliar.`;
+    resDiv.style.display='block'; return;
   }
+  const pvEl = document.getElementById('p-pv');
+  const est = estacionamientos({zonaG, nu:pr.unidades, m2R:pr.m2R, am:leerNum('p-am',0),
+    plazasU:leerNum('p-pu',1), visitas:(pvEl&&pvEl.value!=='')?parseFloat(pvEl.value):null});
+  const sot = calcSotanoV10({area, perm:pr.p.g.perm, huella:Math.min(pr.m2T/pr.nMax, pr.huellaMax),
+    plazas:est.total, m2Plaza:leerNum('p-m2p',30)||30,
+    ancho:leerNum('p-ancho',0), largo:leerNum('p-largo',0), nivDecl:0, areaDecl:0,
+    permiteSup: zonaG==='G1'||zonaG==='G2'||zonaG==='G3'});
 
-  const g = POT[zonaG];
-  const ci = 0.20; // 20% circulación estándar
-  const m2Edif = area * g.ie; // m² edificables base
-  const perm = area * g.perm; // permeabilidad mínima
-  const altBase = g.alt;
-  const nMaxNiv = Math.floor(altBase / 3);
-
-  // Área útil máxima (descontando permeabilidad)
-  const areaEdificable = area * (1 - g.perm);
-  // Huella máxima del edificio (estimada como 85% del área edificable)
-  const huellaMax = Math.round(areaEdificable * 0.85);
-  // m² rentables máximos con el IE base
-  const m2RentMax = Math.round(m2Edif / (1 + ci));
-
-  // Número de unidades que caben
-  const unidades = Math.max(1, Math.floor(m2RentMax / tipoU));
-  const m2Rent = unidades * tipoU;
-  const m2Total = Math.round(m2Rent * (1 + ci));
-  const nivelesNec = Math.ceil(m2Total / Math.max(huellaMax, 1));
-
-  // Estacionamientos
-  // COM-03-2009: ratio por zona G
-  const esZonaAltaE = zonaG==='G3'||zonaG==='G4'||zonaG==='G5';
-  const estR = esZonaAltaE ? Math.ceil(m2Rent/300) : Math.ceil(m2Rent/100);
-  const estV = Math.max(1, Math.ceil(unidades/4)); // COM-03-2009: 1c/4 unidades
-  const estT = estR + estV;
-  const areaLibre = Math.max(0, area - Math.ceil(m2Total/nivelesNec));
-  const estSup = Math.floor(areaLibre / 13.5);
-  const necesitaSot = estSup < estT;
-
-  // Sótano automático
-  let sotInfo = '';
-  let nivSot = 0;
-  let areaSot = 0;
-  if(necesitaSot && ancho > 0 && largo > 0){
-    const sotCalc = calcSotano(ancho, largo, estT);
-    if(sotCalc.factible && sotCalc.niveles){
-      nivSot = sotCalc.niveles;
-      areaSot = Math.floor(ancho/5)*5 * Math.floor(largo/5)*5;
-      sotInfo = `<br>· <strong>${nivSot} nivel(es) de sótano</strong> para ${estT} estacionamientos (~${sotCalc.plazasPorNivel} plazas/nivel)${sotCalc.tieneTandem?' — incluye plazas en tándem':''}`;
-    } else if(!sotCalc.factible && sotCalc.motivo==='terreno_chico'){
-      sotInfo = `<br>· <span style="color:#c0392b">Terreno posiblemente insuficiente para sótano funcional — consultá con arquitecto</span>`;
-    } else {
-      sotInfo = `<br>· Sótano necesario — ingresá ancho y largo del terreno para calcularlo automáticamente`;
-    }
-  } else if(necesitaSot){
-    sotInfo = `<br>· Sótano probablemente necesario — ingresá ancho y largo del terreno para calcularlo`;
-  } else {
-    sotInfo = `<br>· Estacionamientos posibles en superficie (~${estSup} plazas en área libre)`;
-  }
-
-  // Actualizar campos ocultos para que calcPro() use estos valores
-  document.getElementById('p-nu').value = unidades;
+  // El programa automático alimenta los campos que usa calcPro()
+  document.getElementById('p-nu').value = pr.unidades;
   document.getElementById('p-au').value = tipoU;
   document.getElementById('p-ci').value = 20;
-  document.getElementById('p-so').value = nivSot;
-  document.getElementById('p-as').value = areaSot;
 
-  // Mostrar resultado
   const zpNum = parseInt((document.getElementById('p-zp').value||'').replace('z',''));
   const lab1 = LAB1_ZONA[zpNum];
-  const refArea = lab1 ? ` (ref. Lab 1 ${lab1.alias}: ${lab1.area_med}m²/unidad)` : '';
+  const refArea = lab1 ? ` (ref. Lab 1 ${lab1.alias}: ${lab1.area_med} m²/unidad)` : '';
+  const sotTxt = sot.modo==='superficie' ? `Estacionamientos en superficie (~${sot.plazasSup} plazas)`
+    : sot.modo==='auto' ? `<strong>${sot.niveles} nivel(es) de sótano</strong> (${sot.plazasSot} plazas)${sot.plazasSup>0?' + '+sot.plazasSup+' en superficie':''}`
+    : `Sin área disponible para sótano — consultá con arquitecto`;
 
   textoDiv.innerHTML =
-    `· <strong>${unidades} unidades</strong> de <strong>${tipoU} m²</strong> cada una${refArea}<br>` +
-    `· <strong>${m2Total.toLocaleString('es-GT')} m²</strong> construibles totales (incl. 20% circulación)<br>` +
-    `· <strong>${nivelesNec} nivel(es)</strong> necesarios · huella estimada ~${huellaMax.toLocaleString('es-GT')} m²<br>` +
-    `· <strong>${estT} estacionamientos</strong> requeridos (${estR} res. + ${estV} visitas)` +
-    sotInfo +
-    `<br><br><span style="font-size:10px;color:#666">Estimación automática basada en IE ${g.ie} (base ${zonaG}) y tipología seleccionada. Podés cambiar al modo "Tengo un proyecto" para ajustar cualquier parámetro.</span>`;
-
+    `· <strong>${pr.unidades} unidades</strong> de <strong>${tipoU} m²</strong> cada una${refArea}<br>` +
+    `· <strong>${fmt(pr.m2T)} m²</strong> construibles (incl. 20% circulación)<br>` +
+    `· <strong>${pr.niveles} nivel(es)</strong> de ${pr.nMax} permitidos · huella máx. ~${fmt(pr.huellaMax)} m²<br>` +
+    `· <strong>${est.total} estacionamientos</strong> (${est.res} residentes + ${est.vis} visitas${est.am?' + '+est.am+' amenidades':''}) · mínimo municipal: ${est.norma}<br>· ` + sotTxt +
+    (pr.limitaAltura?`<br><span style="color:#c79200">(!) La altura limita el programa antes que el IE — no se aprovecha todo el índice.</span>`:'') +
+    `<br><br><span style="font-size:10px;color:#666">Estimación con IE ${pr.p.ie} (${pr.p.esMax?'maximizado':pr.p.esMedio?'ampliado':'base'} ${zonaG}). Podés cambiar a "Tengo un proyecto" para ajustar cualquier parámetro.</span>`;
   resDiv.style.display = 'block';
 }
 
@@ -1192,6 +1467,7 @@ function setEscenario(esc){
   document.getElementById('btn-esc-base').style.color = esc==='base'?'#fff':'#000';
   document.getElementById('btn-esc-max').style.background = esc==='max'?'#000':'#fff';
   document.getElementById('btn-esc-max').style.color = esc==='max'?'#fff':'#000';
+  if(MODO_PRO==='explorar') calcProgramaAuto();
 }
 
 function showProcedimiento(zonaG, altEfectiva, esMax){
@@ -1218,7 +1494,7 @@ function showTasadorStory(zonaP, area, terBase, nu, au, pm2v, ref){
   if(!pm2v && !ter){el.style.display='none';return;}
 
   const pm2Ter=area>0?Math.round(terBase/area):0;
-  const pm2TerV2=Math.round(pm2Ter*1.43115);
+  const pm2TerV2=Math.round(pm2Ter/V2_POR_M2);
   const precioUnidad=pm2v?Math.round(au*pm2v):null;
   const aniosSalario=precioUnidad?Math.round(precioUnidad/(SM.usd*12)):null;
 
@@ -1230,8 +1506,8 @@ function showTasadorStory(zonaP, area, terBase, nu, au, pm2v, ref){
     const bajo=pm2Ter<ter.min;
     const alto=pm2Ter>ter.max;
     html+=`<div style="font-size:12px;line-height:1.7;color:#000;margin-bottom:10px">
-      El valor máximo calculado para este terreno es <strong>$${terBase.toLocaleString('es-GT')} ($${pm2Ter.toLocaleString('es-GT')}/m² · ${pm2TerV2.toLocaleString('es-GT')} v²)</strong> — es lo que el proyecto puede pagar y seguir siendo viable con el margen declarado.<br><br>
-      Los terrenos en ${ZONA_NOM[zonaP]||'esta zona'} se transan actualmente entre <strong>$${ter.min.toLocaleString('es-GT')}-$${ter.max.toLocaleString('es-GT')}/m²</strong> (${Math.round(ter.min*1.43115)}-${Math.round(ter.max*1.43115)} v²) según portales activos 2024-2025.<br><br>
+      El valor máximo calculado para este terreno es <strong>$${terBase.toLocaleString('es-GT')} ($${pm2Ter.toLocaleString('es-GT')}/m² · $${pm2TerV2.toLocaleString('es-GT')}/v²)</strong> — es lo que el proyecto puede pagar y seguir siendo viable con el margen declarado.<br><br>
+      Los terrenos en ${ZONA_NOM[zonaP]||'esta zona'} se transan actualmente entre <strong>$${ter.min.toLocaleString('es-GT')}-$${ter.max.toLocaleString('es-GT')}/m²</strong> ($${Math.round(ter.min/V2_POR_M2)}-$${Math.round(ter.max/V2_POR_M2)}/v²) según portales activos 2024-2025.<br><br>
       ${enRango?'El valor calculado está dentro del rango de mercado actual. Existe margen de negociación en ambas direcciones.':bajo?'El valor calculado está por debajo del mínimo de mercado actual. Con los supuestos ingresados, pagar precio de mercado reduciría el margen del proyecto. Revisá el programa, el margen objetivo o los costos de construcción.':'El valor calculado supera el rango típico de mercado. El proyecto tiene capacidad de pagar un terreno a precio de mercado y mantener el margen declarado.'}
     </div>`;
   }
@@ -1257,7 +1533,7 @@ function showTasadorStory(zonaP, area, terBase, nu, au, pm2v, ref){
 function setTab(tab,btn){
   document.querySelectorAll('.main-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  ['lite','pro','tasador'].forEach(t=>{
+  ['lite','pro','tasador','terreno'].forEach(t=>{
     document.getElementById('panel-'+t).style.display=t===tab?'block':'none';
   });
 }
@@ -1322,7 +1598,7 @@ function calcLite(){
 
   document.getElementById('l-metrics').innerHTML=`
     <div class="metric-box"><div class="metric-val">${fmt(m2E)}</div><div class="metric-lbl">M² edificables (base)</div><div class="metric-sub">IE ${g.ie} × ${fmt(area)} m²</div></div>
-    <div class="metric-box"><div class="metric-val">${g.alt}m / ${niv} niv.</div><div class="metric-lbl">Altura máx. / niveles</div><div class="metric-sub">a 3m piso-techo. Ampliada: ${g.alt===16?'24m*':g.alt===32?'48m*':'96m*'}</div></div>
+    <div class="metric-box"><div class="metric-val">${g.alt}m / ${niv} niv.</div><div class="metric-lbl">Altura máx. / niveles</div><div class="metric-sub">a 3m piso-techo. ${g.alt_a>g.alt?'Ampliada: '+g.alt_a+'m*':'Sin altura ampliada'}</div></div>
     <div class="metric-box"><div class="metric-val">${fmt(perm)}</div><div class="metric-lbl">M² permeable mín.</div><div class="metric-sub">${(g.perm*100).toFixed(0)}% del terreno (incluye sótanos)</div></div>`;
 
   const tags=[];
@@ -1358,7 +1634,9 @@ function calcLite(){
 
   // Tipo de proyecto recomendado
   let tipoHtml='';
-  if(zona==='G1'||zona==='G2'){
+  if(zona==='G1'){
+    tipoHtml=`<div class="tipo-box"><strong>Zona de protección — no es para desarrollar.</strong> G1 pertenece al Cinturón Ecológico y se rige por su propio reglamento. Cuando un predio tiene una franja G1 o G2 junto a zonas G3-G5, esa edificabilidad normalmente se traslada a la parte urbana del predio. Verificá el caso con la DCT.</div>`;
+  } else if(zona==='G2'){
     tipoHtml=`<div class="tipo-box"><strong>Vivienda unifamiliar o lote.</strong> En ${zona} la normativa limita la densidad (IE ${g.ie}, permeabilidad ${(g.perm*100).toFixed(0)}%). Un edificio multifamiliar rara vez cierra financieramente en esta zona. Consultá la Pro para validar.</div>`;
   } else if(zona==='G3'&&area<300){
     tipoHtml=`<div class="tipo-box" style="border-color:#c79200"><strong>Proyecto pequeño — verificar viabilidad.</strong> Con ${fmt(area)} m² en G3 el costo fijo puede ser alto para pocas unidades. Ideal para dúplex o triplex (2-4 unidades). Analizá con la pestaña Pro.</div>`;
@@ -1370,7 +1648,7 @@ function calcLite(){
   document.getElementById('l-tipo').innerHTML=tipoHtml;
 
   document.getElementById('l-frac').textContent=
-    `Frente mínimo DCT: ${g.fDCT}m. Superficie efectiva mínima DCT: ${fmt(g.aDCT)} m². Consultá siempre en vu.muniguate.com — el mapa POT cambia y puede haber condiciones especiales en tu predio específico.`;
+    `Frente mínimo DCT: ${g.fDCT}m. Superficie efectiva mínima DCT: ${fmt(g.aDCT)} m²${zona==='G3'||zona==='G1'?' (valor provisional — verificar con la DCT)':''}. Consultá siempre en vu.muniguate.com — el mapa POT cambia y puede haber condiciones especiales en tu predio específico.`;
 }
 
 // ==================== PRO ====================
@@ -1379,17 +1657,15 @@ function calcPro(){
   const zonaP=document.getElementById('p-zp').value;
   showCtxG(zonaG,'p-ctx-g');
   showCtxZP(zonaP,'p-ctx-zp');
-  const area=parseFloat(document.getElementById('p-area').value)||0;
-  const ter=parseFloat(document.getElementById('p-ter').value)||0;
-  const cm2=parseFloat(document.getElementById('p-cm2').value)||580;
-  const nu=parseFloat(document.getElementById('p-nu').value)||0;
-  const au=parseFloat(document.getElementById('p-au').value)||0;
-  const ci=parseFloat(document.getElementById('p-ci').value)||20;
-  const so=parseFloat(document.getElementById('p-so').value)||0;
-  const as=parseFloat(document.getElementById('p-as').value)||0;
-  const di=parseFloat(document.getElementById('p-di').value)||5.5;
-  const ad=parseFloat(document.getElementById('p-ad').value)||5.5;
-  const ins=parseFloat(document.getElementById('p-in').value)||13;
+  const esExp = MODO_PRO==='explorar';
+  if(esExp) calcProgramaAuto();
+  const area=leerNum('p-area',0);
+  const ter=leerNum('p-ter',0);
+  const cm2=leerNum('p-cm2',580)||580;
+  const nu=leerNum('p-nu',0);
+  const au=leerNum('p-au',0);
+  const ci=leerNum('p-ci',20);
+  const di=leerNum('p-di',5.5), ad=leerNum('p-ad',5.5), ins=leerNum('p-in',13);
 
   if(!zonaG||!area||!nu||!au){
     document.getElementById('p-resultado').style.display='none';
@@ -1400,210 +1676,150 @@ function calcPro(){
   document.getElementById('p-resultado').style.display='block';
   document.getElementById('p-placeholder').style.display='none';
 
-  const g=POT[zonaG];
+  const altPT = leerNum('p-alt',3)||3;
+  const pvEl = document.getElementById('p-pv');
+  const pm2v = LAB1_VENTA[zonaP]||null;
+  const rentaM2 = LAB1_RENTA[zonaP]||10;
+  const znm = ZONA_NOM[zonaP]||'';
+  const dev = leerDev('p');
 
-  // Leer altura piso-techo del usuario (debe declararse ANTES de usarse)
-  const altPisoTecho = parseFloat(document.getElementById('p-alt')?.value)||3.0;
+  const R = evaluarProyecto({
+    zonaG, esc:ESCENARIO_PRO, area,
+    ancho:leerNum('p-ancho',0), largo:leerNum('p-largo',0),
+    nu, au, ci, cm2, di, ad, ins, altPT,
+    am:leerNum('p-am',0),
+    plazasU:leerNum('p-pu',1),
+    visitas:(pvEl&&pvEl.value!=='')?parseFloat(pvEl.value):null,
+    m2Plaza:leerNum('p-m2p',30)||30,
+    cSot:leerNum('p-csot',700),
+    nivDecl: esExp?0:leerNum('p-so',0),
+    areaDecl: esExp?0:leerNum('p-as',0),
+    pv:pm2v, dev
+  });
+  const {P, g, m2R, m2T, m2E, nMax, huella, est, sot, C} = R;
 
-  // Determinar parámetros según escenario
-  const esMax = ESCENARIO_PRO === 'max' && (zonaG==='G4'||zonaG==='G5') && g.ie_max;
-  const esMedio = ESCENARIO_PRO === 'max' && !esMax; // G1/G2/G3 en modo max → ampliado
+  // Avisos de escenario
+  const avisoMax=document.getElementById('aviso-max');
+  const avisoG3=document.getElementById('aviso-g3-max');
+  if(avisoMax) avisoMax.style.display = P.esMax?'block':'none';
+  if(avisoG3) avisoG3.style.display = P.esMedio?'block':'none';
+  showProcedimiento(zonaG, P.alt, P.esMax);
 
-  // Mostrar avisos correctos
-  const avisoMax = document.getElementById('aviso-max');
-  const avisoG3 = document.getElementById('aviso-g3-max');
-  if(avisoMax) avisoMax.style.display = esMax ? 'block' : 'none';
-  if(avisoG3) avisoG3.style.display = esMedio ? 'block' : 'none';
+  const cST = C.total;
+  const cT = cST + ter;
+  const escLabel = P.esMax?'max·COM-48':P.esMedio?'ampliado':'base';
 
-  // IE efectivo según escenario
-  const ieEfectivo = esMax ? g.ie_max : esMedio ? g.ie_a : g.ie;
-  // Altura efectiva según escenario
-  const altEfectiva = esMax ? g.alt_max : esMedio ? g.alt_a : g.alt;
-  // Costo seguro de caución (solo escenario max: 5% del costo de m² incentivados)
-  const caucionPct = esMax ? 0.05 : 0;
-
-  const pm2v=LAB1_VENTA[zonaP]||null;
-  const rentaM2=LAB1_RENTA[zonaP]||10;
-  const znm=ZONA_NOM[zonaP]||'';
-
-  const m2E=area*ieEfectivo; // IE según escenario
-  const permMin=area*g.perm;
-  const nMax=Math.floor(altEfectiva/altPisoTecho); // Altura según escenario y piso-techo del usuario
-  const m2R=nu*au;
-  const m2C=m2R*(ci/100);
-  const m2T=m2R+m2C;
-  const huella=m2T/Math.max(nMax,1);
-  // Sótano NO computa en IE (COM-030-08: Art.46, límite 1.20m sobre nivel natural del terreno)
-  const cumIE=m2T<=m2E; // IE solo verifica área sobre tierra
-  // Verificar permeabilidad considerando sótano
-  const areaImpermeableSotano=so>0?Math.min(as,area):0;
-  const cumPerm=(area-Math.max(huella,areaImpermeableSotano))>=permMin;
-  const nNec=Math.ceil(m2T/Math.max(area*(1-g.perm)*0.85,1));
-  const am=parseFloat(document.getElementById('p-am')?.value)||0;
-  // COM-03-2009: ratio por zona G, no por tamaño de unidad
-  // G1/G2: 1 plaza c/100m² · G3/G4/G5: 1 plaza c/300m²
-  const esZonaAlta = zonaG==='G3'||zonaG==='G4'||zonaG==='G5';
-  const estR = esZonaAlta ? Math.ceil(m2R/300) : Math.ceil(m2R/100);
-  // COM-03-2009: visitas = 1 plaza c/4 apartamentos (0.25/unidad)
-  const estV = Math.max(1, Math.ceil(nu/4));
-  // COM-29-2025: 1 plaza c/75m² de áreas sociales (amenidades)
-  const estAm = am>0 ? Math.ceil(am/75) : 0;
-  const estT = estR+estV+estAm;
-  const estSot=so>0?Math.floor(as*so/13.5):0;
-
-  // ---- CÁLCULO AUTOMÁTICO DE SÓTANO ----
-  const ancho = parseFloat(document.getElementById('p-ancho').value)||0;
-  const largo = parseFloat(document.getElementById('p-largo').value)||0;
-  let sotanoAuto = null;
-  let nivelSotano = so; // niveles declarados por usuario
-  let areaSotanoUsar = as; // área por nivel declarada por usuario
-
-  // Verificar si los estacionamientos caben en superficie
-  const areaLibreSuperficie = Math.max(0, area - huella);
-  const estSuperficiePosibles = Math.floor(areaLibreSuperficie / 13.5);
-  const necesitaSotano = estSuperficiePosibles < estT;
-
-  if(necesitaSotano && ancho > 0 && largo > 0 && so === 0){
-    // Calcular sótano automáticamente
-    sotanoAuto = calcSotano(ancho, largo, estT);
-    if(sotanoAuto.factible && sotanoAuto.niveles){
-      nivelSotano = sotanoAuto.niveles;
-      areaSotanoUsar = Math.floor(ancho/5)*5 * Math.floor(largo/5)*5;
-    }
-  } else if(so > 0 && ancho > 0 && largo > 0){
-    // Usuario declaró sótano — validar con tabla
-    sotanoAuto = calcSotano(ancho, largo, estT);
-  }
-
-  const factorSotano = COSTO_SOTANO_FACTOR[zonaG] || 1.6;
-  const licE=Math.round(m2T*2.5*({G1:.8,G2:.9,G3:1,G4:1.2,G5:1.4}[zonaG]||1));
-  const costoSotanoTotal = nivelSotano > 0 ? areaSotanoUsar * nivelSotano * cm2 * factorSotano : 0;
-  const obraBase = m2T * cm2;
-  const obra = obraBase + costoSotanoTotal;
-  // Seguro de caución solo en escenario maximizado (COM-48-2024)
-  // 5% del valor de construcción de los m² obtenidos por incentivos sobre el IE base
-  const m2Incentivados = esMax ? Math.max(0, m2T - area*g.ie) : 0;
-  const costoCaucion = Math.round(m2Incentivados * cm2 * caucionPct);
-  const cDi=obra*(di/100);
-  const cAd=obra*(ad/100);
-  const cIns=obra*(ins/100);
-  const cUrb=area*18;
-  const cST=obra+cDi+cAd+cIns+cUrb+licE+costoCaucion;
-  const cT=cST+ter;
-
-  showProcedimiento(zonaG, altEfectiva, esMax);
-  const escLabel = esMax?'max·COM-48':esMedio?'ampliado':'base';
   document.getElementById('p-mpot').innerHTML=`
-    <div class="metric-box"><div class="metric-val">${fmt(m2E)}</div><div class="metric-lbl">M² edificables <span style="font-size:9px;background:#000;color:#fff;padding:1px 5px;border-radius:10px;margin-left:3px">${escLabel}</span></div><div class="metric-sub">IE ${ieEfectivo} × ${fmt(area)} m²</div></div>
-    <div class="metric-box"><div class="metric-val">${altEfectiva}m / ${nMax} niv.</div><div class="metric-lbl">Altura / niveles máx.</div><div class="metric-sub">a ${altPisoTecho}m piso-techo · huella ~${fmt(huella,0)} m²</div></div>
-    <div class="metric-box"><div class="metric-val">${estT}</div><div class="metric-lbl">Estac. requeridos</div><div class="metric-sub">${estR} res. + ${estV} visitas${estAm>0?' + '+estAm+' amenidades':''} · Rgto. Muni.</div></div>`;
+    <div class="metric-box"><div class="metric-val">${fmt(m2E)}</div><div class="metric-lbl">M² edificables <span style="font-size:9px;background:#000;color:#fff;padding:1px 5px;border-radius:10px;margin-left:3px">${escLabel}</span></div><div class="metric-sub">IE ${P.ie} × ${fmt(area)} m² · tu programa: ${fmt(m2T)} m²</div></div>
+    <div class="metric-box"><div class="metric-val">${P.alt}m / ${nMax} niv.</div><div class="metric-lbl">Altura / niveles máx.</div><div class="metric-sub">a ${altPT}m piso-techo · huella ~${fmt(Math.min(huella,R.huellaMax))} m²</div></div>
+    <div class="metric-box"><div class="metric-val">${est.total}</div><div class="metric-lbl">Estacionamientos</div><div class="metric-sub">${est.res} residentes + ${est.vis} visitas${est.am>0?' + '+est.am+' amenidades':''} · mínimo municipal: ${est.norma}</div></div>`;
 
   const aTags=[];
-  aTags.push(`<span class="tag ${cumIE?'tag-ok':'tag-warn'}">${cumIE?'Cumple IE POT':'Excede IE — ajustá programa'}</span>`);
-  aTags.push(`<span class="tag ${cumPerm?'tag-ok':'tag-warn'}">${cumPerm?'Permeabilidad OK':'Revisar permeabilidad — sótano puede afectar'}</span>`);
-  if(nivelSotano > 0){
-    const plazasSot = sotanoAuto ? sotanoAuto.plazasTotal : areaSotanoUsar*nivelSotano/13.5;
-    const okSot = plazasSot >= estT;
-    const fuenteS = so > 0 ? 'declarado' : 'auto';
-    aTags.push(`<span class="tag ${okSot?'tag-ok':'tag-warn'}">${nivelSotano} nivel(es) sótano (${fuenteS}) · ~${Math.floor(plazasSot)} plazas${okSot?' ✓':' — insuficiente'}</span>`);
-    if(sotanoAuto && sotanoAuto.tieneTandem){
-      aTags.push(`<span class="tag tag-warn">(!) ${sotanoAuto.tandPorNivel} plazas en tándem/nivel — verificar con especialista</span>`);
-    }
-  } else if(necesitaSotano && (!ancho || !largo)){
-    aTags.push(`<span class="tag tag-warn">Sótano probablemente necesario — ingresá ancho y largo del terreno para calcularlo automáticamente</span>`);
-  } else if(!necesitaSotano){
-    aTags.push(`<span class="tag tag-ok">Estac. posibles en superficie (~${estSuperficiePosibles} plazas en área libre)</span>`);
-  } else if(sotanoAuto && !sotanoAuto.factible){
-    aTags.push(`<span class="tag tag-danger">Terreno muy chico para sótano funcional — consultá con arquitecto o ingeniero</span>`);
+  aTags.push(`<span class="tag ${R.cumIE?'tag-ok':'tag-warn'}">${R.cumIE?'Cumple IE POT':'Excede IE en '+fmt(m2T-m2E)+' m² — ajustá programa'}</span>`);
+  if(!R.cumAlt){
+    aTags.push(`<span class="tag tag-warn">No cabe en la altura: necesita ~${R.nivNec} niveles, máximo ${nMax}</span>`);
   }
-  // Beneficio COM-29-2025: G4/G5 estacionamientos ≤50% no computan en IE hasta dic.2030
-  if((zonaG==='G4'||zonaG==='G5')){
-    const pctSot=costoSotanoTotal>0?(areaSotanoUsar*nivelSotano/m2T)*100:0;
-    if(pctSot<=50){
-      aTags.push(`<span class="tag tag-ok">Según COM-29-2025: estac. (${Math.round(pctSot)}% del proyecto) podrían no computar en IE hasta dic. 2030 — verificar con DCT</span>`);
-    }
+  const cumPerm = R.cumAlt && !sot.excedePerm;
+  aTags.push(`<span class="tag ${cumPerm?'tag-ok':'tag-warn'}">${cumPerm?'Permeabilidad OK ('+(g.perm*100).toFixed(0)+'% libre de construcción y sótano)':'Revisar permeabilidad — el sótano o la huella ocupan el área permeable'}</span>`);
+  if(est.total>est.norma){
+    aTags.push(`<span class="tag tag-info">Diseño: ${est.total} plazas (norma pide ${est.norma}) — manda tu criterio de mercado</span>`);
+  }
+  if(sot.modo==='superficie'){
+    aTags.push(`<span class="tag tag-ok">Estacionamientos en superficie (${sot.plazasSup} plazas) — sin sótano</span>`);
+  } else if(sot.modo==='auto'){
+    aTags.push(`<span class="tag tag-info">Sótano calculado: ${sot.niveles} nivel(es) · ${sot.plazasSot} plazas bajo tierra${sot.plazasSup>0?' + '+sot.plazasSup+' en superficie':''}</span>`);
+  } else if(sot.modo==='declarado'){
+    aTags.push(`<span class="tag ${sot.suficiente?'tag-ok':'tag-warn'}">Sótano declarado: ${sot.niveles} nivel(es) · caben ~${sot.plazasSot} plazas${sot.plazasSup>0?' + '+sot.plazasSup+' en superficie':''}${sot.suficiente?' ✓':' — faltan '+(est.total-sot.capacidad)}</span>`);
+  } else if(sot.modo==='inviable'){
+    aTags.push(`<span class="tag tag-danger">No hay área disponible para sótano — consultá con arquitecto</span>`);
+  }
+  if(sot.avisos.includes('angosto')) aTags.push(`<span class="tag tag-warn">Terreno de menos de 15 m de ancho: rampas y circulación del sótano son poco eficientes</span>`);
+  if(sot.avisos.includes('muchos_niveles')) aTags.push(`<span class="tag tag-warn">Más de 4 niveles de sótano — revisá programa o plazas por unidad</span>`);
+  if((zonaG==='G4'||zonaG==='G5') && sot.m2Sot>0){
+    const pctSot=(sot.m2Sot/m2T)*100;
+    if(pctSot<=50) aTags.push(`<span class="tag tag-ok">COM-29-2025: estacionamientos (${Math.round(pctSot)}% del proyecto) podrían no computar en IE hasta dic. 2030 — verificar con DCT</span>`);
   }
   document.getElementById('p-apot').innerHTML=aTags.join('');
 
-  // Info sótano para mostrar
-  const sotanoInfo = (() => {
-    if(nivelSotano === 0) return '';
-    const fuente = so > 0 ? 'declarado' : 'calculado automáticamente';
-    const tandemWarn = sotanoAuto && sotanoAuto.tieneTandem ?
-      ` (!) ${sotanoAuto.tandPorNivel} plazas en tándem/nivel` : '';
-    const dim = sotanoAuto && sotanoAuto.anchoReal ?
-      ` (${sotanoAuto.anchoReal}×${sotanoAuto.largoReal}m)` : '';
-    return `<tr><td style="color:#888;font-size:11px;padding-left:12px">${nivelSotano} nivel(es) sótano${dim} · ${fmt(areaSotanoUsar)} m²/nivel · factor ×${factorSotano} (${fuente})${tandemWarn}</td><td style="color:#888;font-size:11px">${usd(costoSotanoTotal)}</td></tr>`;
-  })();
-
+  const fila=(t,v,sub)=>`<tr><td${sub?' style="color:#888;font-size:11px;padding-left:12px"':''}>${t}</td><td${sub?' style="color:#888;font-size:11px"':''}>${v}</td></tr>`;
   document.getElementById('p-tcost').innerHTML=`
-    <tr><td>Terreno</td><td>${usd(ter)}</td></tr>
-    <tr><td>Obra civil (${usd(cm2)}/m² · ${fmt(m2T,0)} m²)</td><td>${usd(m2T*cm2)}</td></tr>
-    ${nivelSotano>0?sotanoInfo:''}
-    <tr><td>Planificación y diseño (${di}%)</td><td>${usd(cDi)}</td></tr>
-    <tr><td>Administración y supervisión (${ad}%)</td><td>${usd(cAd)}</td></tr>
-    <tr><td>Instalaciones y equipo (${ins}%)</td><td>${usd(cIns)}</td></tr>
-    <tr><td>Urbanización estimada</td><td>${usd(cUrb)}</td></tr>
-    <tr><td>Licencias estimadas (~$2.50/m²)</td><td>${usd(licE)}</td></tr>
-    ${costoCaucion>0?`<tr><td>Seguro de caución incentivos (5% s/m² incentivados · COM-48-2024)</td><td>${usd(costoCaucion)}</td></tr>`:''}
+    ${fila('Terreno',usd(ter))}
+    ${fila(`Obra sobre nivel (${usd(cm2)}/m² · ${fmt(m2T)} m²)`,usd(C.obraSup))}
+    ${C.obraSot>0?fila(`Sótano (${fmt(sot.m2Sot)} m² · ${sot.niveles} nivel(es) · ${usd(leerNum('p-csot',700))}/m²)`,usd(C.obraSot)):''}
+    ${fila(`Planificación y diseño (${di}%)`,usd(C.cDi))}
+    ${fila(`Administración y supervisión (${ad}%)`,usd(C.cAd))}
+    ${fila(`Instalaciones y equipo (${ins}%)`,usd(C.cIns))}
+    ${fila(`Imprevistos (${dev.imp}% de obra)`,usd(C.cImp))}
+    ${fila('Urbanización estimada (~$18/m² terreno)',usd(C.cUrb))}
+    ${fila('Licencias estimadas',usd(C.licE))}
+    ${C.cCau>0?fila('Seguro de caución incentivos (5% s/m² incentivados · COM-48-2024)',usd(C.cCau)):''}
+    ${fila(`Comercialización (${dev.com}% de ventas)`,pm2v?usd(C.cCom):'— sin zona postal')}
+    ${fila(`Financiamiento (${dev.finPct}% financiado · ${dev.finTasa}% anual · ${dev.finMeses} meses)`,usd(C.cFin))}
+    ${dev.iva==='si'?fila('IVA neto (IVA de ventas − crédito fiscal de costos)',pm2v?usd(C.cIva):'— sin zona postal'):''}
+    ${dev.iva==='si'&&pm2v?fila(`IVA cobrado ${usd(C.ivaDeb)} − crédito ${usd(C.ivaCred)} · confirmar con tu contador`,'',true):''}
     <tr><td>Total sin terreno</td><td>${usd(cST)}</td></tr>
     <tr class="total-row"><td>Inversión total</td><td>${usd(cT)}</td></tr>
-    <tr><td style="color:#888;font-size:11px">Costo/m² construido (sin terreno)</td><td style="color:#888;font-size:11px">${usd(cST/m2T)}/m²</td></tr>`;
+    ${fila('Costo/m² construido sobre nivel (sin terreno)',usd(cST/m2T)+'/m²',true)}`;
 
-  document.getElementById('p-fcost').textContent='Costos de obra: proyectos reales Guatemala City, ajustados +28% inflación acumulada 2019-2025 (Banguat). Urbanización: ~$18/m² terreno. Licencias: ~$2.50/m² construible × factor zona. Estacionamientos: COM-03-2009 (G3/G4/G5: 1c/300m² área residencial; G1/G2: 1c/100m²; visitas: 1c/4 unidades). Todos los valores son editables.';
+  document.getElementById('p-fcost').textContent='Costos de obra: proyectos reales Ciudad de Guatemala, ajustados +28% inflación 2019-2025 (Banguat). Sótano: plazas × m²/plaza (incluye rampas y circulación), nunca sobre el área permeable. Estacionamientos: mínimo municipal (G3/G4/G5: 1c/300 m² residencial; G1/G2: 1c/100 m²; visitas 1c/4 unidades; amenidades 1c/75 m²) o tu diseño, lo que sea mayor. IVA: estimación simplificada, confirmar estructura fiscal con contador. Todos los valores son editables.';
 
-  // Venta
-  const ivB=pm2v?m2R*pm2v:null;
+  // ---- Venta ----
+  const ivB=pm2v?R.ventas:null;
   const ivL=pm2v?m2R*Math.round(pm2v*.85):null;
   const ivH=pm2v?m2R*Math.round(pm2v*1.1):null;
-  const mB=ivB?((ivB-cT)/cT)*100:null;
-  const brutoM2=pm2v?(pm2v-cST/m2T):null;
-
-  const msv=ivB?((ivB-cT)/ivB)*100:null; // margen sobre ventas
-  // Punto de equilibrio
-  const costoXUnidad=cT/nu;
+  const roi=ivB?((ivB-cT)/cT)*100:null;
+  const msv=ivB?((ivB-cT)/ivB)*100:null;
   const unidadesPE=pm2v?Math.ceil(cT/(au*pm2v)):null;
   const pctPE=unidadesPE?Math.round((unidadesPE/nu)*100):null;
+  const colROI = roi==null?'#000':roi>=25?'#1f7a3b':roi>=15?'#c79200':'#c0392b';
   document.getElementById('p-mv').innerHTML=`
-    <div class="metric-box"><div class="metric-val">${ivB?usd(ivB):'—'}</div><div class="metric-lbl">Ingreso venta base${pm2v?'<span class="ref-badge">Lab 1</span>':''}</div><div class="metric-sub">${pm2v?usd(pm2v)+'/m² mediana '+znm:''}</div></div>
-    <div class="metric-box"><div class="metric-val" style="color:${msv==null?'#000':msv>=18?'#1f7a3b':msv>=10?'#c79200':'#c0392b'}">${msv!=null?pct(msv):'—'}</div><div class="metric-lbl">Margen sobre ventas</div><div class="metric-sub">Salud del negocio · Ref. GT: 18-22%</div></div>
-    <div class="metric-box"><div class="metric-val" style="color:${mB==null?'#000':mB>=25?'#1f7a3b':mB>=15?'#c79200':'#c0392b'}">${mB!=null?pct(mB):'—'}</div><div class="metric-lbl">ROI sobre inversión</div><div class="metric-sub">Retorno del inversionista · Ref. GT: 25-30%</div></div>`;
+    <div class="metric-box"><div class="metric-val">${ivB?usd(ivB):'—'}</div><div class="metric-lbl">Ingreso venta base${pm2v?'<span class="ref-badge">Lab 1</span>':''}</div><div class="metric-sub">${pm2v?usd(pm2v)+'/m² · '+znm:''}</div></div>
+    <div class="metric-box"><div class="metric-val" style="color:${colROI}">${roi!=null?pct(roi):'—'}</div><div class="metric-lbl">Margen sobre inversión</div><div class="metric-sub">Utilidad ÷ inversión total · Ref. GT: 25-30%</div></div>
+    <div class="metric-box"><div class="metric-val">${msv!=null?pct(msv):'—'}</div><div class="metric-lbl">Margen sobre ventas</div><div class="metric-sub">Utilidad ÷ ventas · equivale a ~20-23%</div></div>`;
 
+  let peHtml='';
+  if(unidadesPE!=null){
+    peHtml = unidadesPE<=nu
+      ? `<tr><td style="padding-top:10px"><strong>Punto de equilibrio de ventas</strong></td><td style="padding-top:10px"><strong>${unidadesPE} de ${nu} unidades (${pctPE}%)</strong></td></tr>
+         <tr><td style="color:#888;font-size:11px">Vendiendo ${unidadesPE} unidades cubrís toda la inversión. Las ${nu-unidadesPE} restantes son utilidad.</td><td></td></tr>`
+      : `<tr><td style="padding-top:10px"><strong>Punto de equilibrio de ventas</strong></td><td style="padding-top:10px;color:#c0392b"><strong>No se alcanza</strong></td></tr>
+         <tr><td style="color:#c0392b;font-size:11px">Aun vendiendo las ${nu} unidades no se cubre la inversión (harían falta ${unidadesPE}).</td><td></td></tr>`;
+  }
   document.getElementById('p-tv').innerHTML=pm2v?`
     <tr><td>Escenario conservador (-15%)</td><td>${usd(ivL)} <span style="font-size:10px;color:#888">${usd(Math.round(pm2v*.85))}/m²</span></td></tr>
-    <tr><td>Escenario base (mediana ${znm})</td><td>${usd(ivB)} <span style="font-size:10px;color:#888">${usd(pm2v)}/m²</span></td></tr>
+    <tr><td>Escenario base (${znm})</td><td>${usd(ivB)} <span style="font-size:10px;color:#888">${usd(pm2v)}/m²</span></td></tr>
     <tr><td>Escenario optimista (+10%)</td><td>${usd(ivH)} <span style="font-size:10px;color:#888">${usd(Math.round(pm2v*1.1))}/m²</span></td></tr>
     <tr class="total-row"><td>Inversión total a recuperar</td><td>${usd(cT)}</td></tr>
-    <tr><td style="padding-top:10px"><strong>Punto de equilibrio de ventas</strong></td><td style="padding-top:10px"><strong>${unidadesPE} de ${nu} unidades (${pctPE}%)</strong></td></tr>
-    <tr><td style="color:#888;font-size:11px">Vendiendo ${unidadesPE} unidades cubrís toda la inversión. Las restantes ${nu-unidadesPE} son utilidad.</td><td></td></tr>`
+    ${peHtml}`
     :`<tr><td colspan="2" style="text-align:center;color:#888;padding:14px">Seleccioná una zona postal para ver escenarios de venta con precios de referencia de Lab 1.</td></tr>`;
 
-  if(mB!=null){
-    const c=mB>=20?'sem-verde':mB>=10?'sem-amarillo':'sem-rojo';
-    const d=mB>=20?'dot-v':mB>=10?'dot-a':'dot-r';
-    const t=mB>=20?`Margen de ${pct(mB)} — por encima del umbral de referencia (25-30%). El proyecto tiene potencial de viabilidad en escenario base. Profundizá con un arquitecto y evaluador financiero antes de comprometerte.`
-      :mB>=10?`Margen de ${pct(mB)}. Por debajo del 20% — zona de atención. Revisá el precio del terreno, el programa de unidades o los acabados para mejorar el resultado.`
-      :`Margen de ${pct(mB)}. Con los supuestos actuales el proyecto no alcanza retorno suficiente. Revisá el precio del terreno o explorá una zona con mayor precio de mercado.`;
+  if(roi!=null){
+    const c=roi>=25?'sem-verde':roi>=15?'sem-amarillo':'sem-rojo';
+    const d=roi>=25?'dot-v':roi>=15?'dot-a':'dot-r';
+    const t=roi>=25?`Margen de ${pct(roi)} sobre inversión — dentro o por encima de la referencia de mercado (25-30%). El proyecto tiene potencial de viabilidad en escenario base. Profundizá con un arquitecto y evaluador financiero antes de comprometerte.`
+      :roi>=15?`Margen de ${pct(roi)} sobre inversión — por debajo de la referencia de 25-30%. Zona de atención: revisá el precio del terreno, el programa de unidades, los estacionamientos o los acabados.`
+      :`Margen de ${pct(roi)} sobre inversión. Con los supuestos actuales el proyecto no alcanza un retorno suficiente. Revisá el precio del terreno o explorá una zona con mayor precio de mercado.`;
     document.getElementById('p-sv').innerHTML=`<div class="sem-box ${c}"><div class="sem-dot ${d}"></div><div>${t}</div></div>`;
   } else {
     document.getElementById('p-sv').innerHTML='';
   }
-  document.getElementById('p-fv').textContent=pm2v?`Precios de venta: mediana ${znm} de 535 modelos activos · Lab 1 UMBRAL 2025. Son precios de lista de apartamentos/unidades — no precio de terreno. Margen ref. GT (2018-2019): 25-30% — verificar condiciones actuales con evaluador financiero.`:'Seleccioná una zona postal para cargar precios de referencia de Lab 1 UMBRAL.';
+  document.getElementById('p-fv').textContent=pm2v?`Precios de venta: referencia conservadora ${znm} (el menor de dos cortes de Lab 1 UMBRAL 2025). Son precios de lista — el precio de cierre suele ser menor. Margen de referencia GT: 25-30% sobre inversión total — verificar condiciones actuales con evaluador financiero.`:'Seleccioná una zona postal para cargar precios de referencia de Lab 1 UMBRAL.';
 
-  // Renta
+  // ---- Renta ---- (sin comercialización ni IVA de venta)
+  const cTR = cT - C.cCom - C.cIva;
   const ingM=m2R*rentaM2;
   const ingB=ingM*12*.92;
   const gOp=ingB*.15;
   const ingN=ingB-gOp;
-  const yB=(ingB/cT)*100;
-  const yN=(ingN/cT)*100;
-  const rec=ingN>0?cT/ingN:null;
+  const yB=(ingB/cTR)*100;
+  const yN=(ingN/cTR)*100;
+  const rec=ingN>0?cTR/ingN:null;
 
-  document.getElementById('p-story').innerHTML=`<strong>¿Y si en vez de vender, rentás?</strong><br>${nu} unidades de ${au} m² en ${znm||'esta zona'} generarían aproximadamente <strong>${usd(ingM)}/mes</strong> en renta bruta — <strong>${usd(ingN)}/año</strong> neto estimado tras vacancia (8%) y gastos operativos (15%).<br><br>A ese ritmo, recuperás la inversión en <strong>${rec?fmt(rec,0)+' años':'—'}</strong>. Pero a diferencia de una venta, el activo sigue siendo tuyo: seguís generando ingreso y construyendo patrimonio. Esto es lo que hace una familia inversora, una empresa inmobiliaria o un FIBRA. Requiere capital paciente, pero es cómo se construye ciudad a largo plazo.`;
+  document.getElementById('p-story').innerHTML=`<strong>¿Y si en vez de vender, rentás?</strong><br>${nu} unidades de ${au} m² en ${znm||'esta zona'} generarían aproximadamente <strong>${usd(ingM)}/mes</strong> en renta bruta — <strong>${usd(ingN)}/año</strong> neto estimado tras vacancia (8%) y gastos operativos (15%).<br><br>A ese ritmo, recuperás la inversión (${usd(cTR)}, sin costos de comercialización ni IVA de venta) en <strong>${rec?fmt(rec,0)+' años':'—'}</strong>. Pero a diferencia de una venta, el activo sigue siendo tuyo: seguís generando ingreso y construyendo patrimonio. Esto es lo que hace una familia inversora, una empresa inmobiliaria o un FIBRA. Requiere capital paciente, pero es cómo se construye ciudad a largo plazo.`;
 
   document.getElementById('p-mr').innerHTML=`
     <div class="metric-box"><div class="metric-val">${usd(ingB)}</div><div class="metric-lbl">Ingreso bruto anual${pm2v?'<span class="ref-badge">Lab 1</span>':''}</div><div class="metric-sub">${usd(rentaM2)}/m²/mes · 8% vacancia</div></div>
-    <div class="metric-box"><div class="metric-val">${pct(yB)} / ${pct(yN)}</div><div class="metric-lbl">Yield bruto / neto</div><div class="metric-sub">sobre inversión total</div></div>
+    <div class="metric-box"><div class="metric-val">${pct(yB)} / ${pct(yN)}</div><div class="metric-lbl">Yield bruto / neto</div><div class="metric-sub">sobre inversión para renta</div></div>
     <div class="metric-box"><div class="metric-val">${rec?fmt(rec,0)+' años':'—'}</div><div class="metric-lbl">Período recuperación</div><div class="metric-sub">a ingreso neto actual</div></div>`;
 
   document.getElementById('p-tr').innerHTML=`
@@ -1619,8 +1835,7 @@ function calcPro(){
     :`Yield neto de ${pct(yN)}. Bajo 4% — el costo de inversión es alto respecto al ingreso por renta. Revisá costos, programa o precio del terreno.`;
   document.getElementById('p-sr').innerHTML=`<div class="sem-box ${cr}"><div class="sem-dot ${dr}"></div><div>${tr2}</div></div>`;
 
-  // Nivel 3 — Indicadores urbanos
-  if(zonaP) showCtxUrb(zonaG, zonaP, nu, au, m2T, estT, costoSotanoTotal, cT);
+  if(zonaP) showCtxUrb(zonaG, zonaP, nu, au, m2T, est.total, C.obraSot, cT);
 }
 
 // ---- MODO TASADOR ----
@@ -1642,72 +1857,66 @@ function setModoTas(modo){
 function calcProgramaVend(){
   const zonaG = document.getElementById('t-g').value;
   const zonaP = document.getElementById('t-zp').value;
-  const area = parseFloat(document.getElementById('t-area').value)||0;
-  const ancho = parseFloat(document.getElementById('t-ancho').value)||0;
-  const largo = parseFloat(document.getElementById('t-largo').value)||0;
+  const area = leerNum('t-area',0);
   const tipoU = parseInt(document.getElementById('t-tipo-vend')?.value)||80;
   const resDiv = document.getElementById('resultado-vend-auto');
   const textoDiv = document.getElementById('texto-vend-auto');
-
   if(!zonaG || !area){ if(resDiv) resDiv.style.display='none'; return; }
 
-  const g = POT[zonaG];
-  const ci = 0.20;
-  const m2Edif = area * g.ie;
-  const areaEdif = area * (1 - g.perm);
-  const huellaMax = Math.round(areaEdif * 0.85);
-  const m2RentMax = Math.round(m2Edif / (1 + ci));
-  const unidades = Math.max(1, Math.floor(m2RentMax / tipoU));
-  const m2Rent = unidades * tipoU;
-  const m2Total = Math.round(m2Rent * (1 + ci));
-  const nivelesNec = Math.ceil(m2Total / Math.max(huellaMax, 1));
-  const esZonaAltaV = zonaG==='G3'||zonaG==='G4'||zonaG==='G5';
-  const estR = esZonaAltaV ? Math.ceil(m2Rent/300) : Math.ceil(m2Rent/100);
-  const estV = Math.max(1, Math.ceil(unidades/4));
-  const estT = estR + estV;
-
-  // Actualizar campos ocultos para que calcTasador() los use
-  document.getElementById('t-nu').value = unidades;
+  const pr = programaAuto(zonaG, area, tipoU, 'base', 3, 0.20);
+  if(pr.unidades<1){
+    document.getElementById('t-nu').value='';
+    textoDiv.innerHTML=`El terreno es muy pequeño para un proyecto de apartamentos de ${tipoU} m² en ${zonaG}.`;
+    if(resDiv) resDiv.style.display='block'; return;
+  }
+  document.getElementById('t-nu').value = pr.unidades;
   document.getElementById('t-au').value = tipoU;
   document.getElementById('t-ci').value = 20;
 
-  // Sótano si hay dimensiones
-  let sotTxt = '';
-  if(ancho > 0 && largo > 0){
-    const areaLibre = Math.max(0, area - huellaMax);
-    const estSup = Math.floor(areaLibre / 13.5);
-    if(estSup < estT){
-      const sotCalc = calcSotano(ancho, largo, estT);
-      if(sotCalc.factible && sotCalc.niveles){
-        document.getElementById('t-ancho').value = ancho;
-        document.getElementById('t-largo').value = largo;
-        sotTxt = `<br>· Requiere <strong>${sotCalc.niveles} nivel(es) de sótano</strong> para ${estT} estacionamientos`;
-      }
-    }
-  }
+  const tvEl=document.getElementById('t-pv');
+  const est = estacionamientos({zonaG, nu:pr.unidades, m2R:pr.m2R, am:0,
+    plazasU:leerNum('t-pu',1), visitas:(tvEl&&tvEl.value!=='')?parseFloat(tvEl.value):null});
+  const sot = calcSotanoV10({area, perm:pr.p.g.perm, huella:Math.min(pr.m2T/pr.nMax, pr.huellaMax),
+    plazas:est.total, m2Plaza:leerNum('t-m2p',30)||30,
+    ancho:leerNum('t-ancho',0), largo:leerNum('t-largo',0), nivDecl:0, areaDecl:0,
+    permiteSup: zonaG==='G1'||zonaG==='G2'||zonaG==='G3'});
+  const sotTxt = sot.modo==='auto' ? `<br>· Requiere <strong>${sot.niveles} nivel(es) de sótano</strong> para ${sot.plazasSot} plazas` : '';
 
   const lab1 = LAB1_ZONA[parseInt((zonaP||'').replace('z',''))];
   textoDiv.innerHTML =
-    `Un desarrollador probablemente evaluaría <strong>${unidades} unidades de ~${tipoU} m²</strong> en este terreno.<br>` +
-    `· ${m2Total.toLocaleString('es-GT')} m² construibles · ${nivelesNec} nivel(es) · ${estT} estacionamientos` +
-    sotTxt +
-    (lab1 ? `<br>· Ref. mercado activo en ${lab1.alias}: ${lab1.area_med}m²/unidad típica · ${lab1.n} proyectos en Lab 1 2025` : '') +
+    `Un desarrollador probablemente evaluaría <strong>${pr.unidades} unidades de ~${tipoU} m²</strong> en este terreno.<br>` +
+    `· ${fmt(pr.m2T)} m² construibles · ${pr.niveles} nivel(es) · ${est.total} estacionamientos` + sotTxt +
+    (lab1 ? `<br>· Ref. mercado activo en ${lab1.alias}: ${lab1.area_med} m²/unidad típica · ${lab1.n} proyectos en Lab 1 2025` : '') +
     `<br><br><span style="font-size:10px;color:#666">Este es el programa que la calculadora usa para estimar el valor máximo de tu terreno. Podés cambiar el tipo de proyecto para ver cómo cambia el resultado.</span>`;
   if(resDiv) resDiv.style.display = 'block';
 }
 
-// ==================== TASADOR ====================
+// Parámetros comunes del Tasador para un programa dado
+function evaluarTasador(zonaG, area, nu, au, ci, cm2, pv){
+  const tvEl=document.getElementById('t-pv');
+  return evaluarProyecto({
+    zonaG, esc:'base', area,
+    ancho:leerNum('t-ancho',0), largo:leerNum('t-largo',0),
+    nu, au, ci, cm2, di:5.5, ad:5.5, ins:13, altPT:3, am:0,
+    plazasU:leerNum('t-pu',1),
+    visitas:(tvEl&&tvEl.value!=='')?parseFloat(tvEl.value):null,
+    m2Plaza:leerNum('t-m2p',30)||30,
+    cSot:leerNum('t-csot',700),
+    nivDecl:0, areaDecl:0, pv, dev:leerDev('t')
+  });
+}
+
 function calcTasador(){
   const zonaG=document.getElementById('t-g').value;
   const zonaP=document.getElementById('t-zp').value;
   showCtxG(zonaG,'t-ctx-g');
-  showCtxZP(zonaP,'t-ctx-zp-dummy'); // solo contexto, sin mostrar (div no existe en tasador)
-  const area=parseFloat(document.getElementById('t-area').value)||0;
-  const margenObj=parseFloat(document.getElementById('t-margen').value)||25;
-  const nu=parseFloat(document.getElementById('t-nu').value)||0;
-  const au=parseFloat(document.getElementById('t-au').value)||0;
-  const cm2=parseFloat(document.getElementById('t-cm2').value)||580;
-  const pm2v=parseFloat(document.getElementById('t-pm2v').value)||0;
+  if(MODO_TAS==='vend') calcProgramaVend();
+  const area=leerNum('t-area',0);
+  const margenObj=leerNum('t-margen',25);
+  const nu=leerNum('t-nu',0);
+  const au=leerNum('t-au',0);
+  const cm2=leerNum('t-cm2',580)||580;
+  const pm2v=leerNum('t-pm2v',0);
 
   if(!zonaG||!area||!nu||!au||!pm2v){
     document.getElementById('t-resultado').style.display='none';
@@ -1718,72 +1927,33 @@ function calcTasador(){
   document.getElementById('t-resultado').style.display='block';
   document.getElementById('t-placeholder').style.display='none';
 
-  const g=POT[zonaG];
   const znm=ZONA_NOM[zonaP]||'';
-  const ci=parseFloat(document.getElementById('t-ci').value)||20;
-  const di=5.5,ad=5.5,ins=13;
-  const tAncho=parseFloat(document.getElementById('t-ancho').value)||0;
-  const tLargo=parseFloat(document.getElementById('t-largo').value)||0;
+  const ci=leerNum('t-ci',20);
+  const dev=leerDev('t');
 
-  const m2R=nu*au;
-  const m2T=m2R*(1+ci/100);
-  const nMax=Math.floor(g.alt/3);
-
-  // Calcular sótano automático si hay dimensiones
-  const huellaTas = m2T / Math.max(nMax,1);
-  const areaLibreTas = Math.max(0, area - huellaTas);
-  // COM-03-2009: G3/G4/G5 → 1c/300m², G1/G2 → 1c/100m²
-  const esZonaAltaTas = zonaG==='G3'||zonaG==='G4'||zonaG==='G5';
-  const estTas = (esZonaAltaTas?Math.ceil(m2R/300):Math.ceil(m2R/100)) + Math.max(1,Math.ceil(nu/4));
-  const estSupTas = Math.floor(areaLibreTas/13.5);
-  const necesitaSotTas = estSupTas < estTas;
-
-  let sotTas = null;
-  let nivSotTas = 0;
-  let areaSotTas = 0;
-  if(necesitaSotTas && tAncho > 0 && tLargo > 0){
-    sotTas = calcSotano(tAncho, tLargo, estTas);
-    if(sotTas.factible && sotTas.niveles){
-      nivSotTas = sotTas.niveles;
-      areaSotTas = Math.floor(tAncho/5)*5 * Math.floor(tLargo/5)*5;
-    }
-  }
-  const factorSotTas = COSTO_SOTANO_FACTOR[zonaG] || 1.6;
-  const costoSotTas = nivSotTas > 0 ? areaSotTas * nivSotTas * cm2 * factorSotTas : 0;
-
-  // Costo sin terreno
-  const obraBase=m2T*cm2;
-  const obra=obraBase+costoSotTas;
-  const cDi=obra*(di/100);
-  const cAd=obra*(ad/100);
-  const cIns=obra*(ins/100);
-  const cUrb=area*18;
-  const licE=Math.round(m2T*2.5*({G1:.8,G2:.9,G3:1,G4:1.2,G5:1.4}[zonaG]||1));
-  const cST=obra+cDi+cAd+cIns+cUrb+licE;
-
-  // Método residual: Valor terreno = Ventas - Costos ST - Margen
-  const calcTerMax=(precio)=>{
-    const ventas=m2R*precio;
-    const margen=ventas*(margenObj/100);
-    return Math.max(0,ventas-cST-margen);
-  };
-
-  const terBase=calcTerMax(pm2v);
-  const terL15=calcTerMax(Math.round(pm2v*.85));
-  const terOpt=calcTerMax(Math.round(pm2v*1.10));
-  const terPes=calcTerMax(Math.round(pm2v*.80));
+  const R = evaluarTasador(zonaG, area, nu, au, ci, cm2, pm2v);
+  const {m2R, m2T, m2E, est, sot, C} = R;
+  const terBase = valorResidual(R.ventas, C.total, margenObj);
+  // Stress test: se recalcula todo (comercialización e IVA dependen del precio)
+  const terCon = p => { const r=evaluarTasador(zonaG, area, nu, au, ci, cm2, p); return valorResidual(r.ventas, r.C.total, margenObj); };
+  const terOpt=terCon(Math.round(pm2v*1.10));
+  const terL15=terCon(Math.round(pm2v*.85));
+  const terPes=terCon(Math.round(pm2v*.80));
 
   const incidencia=terBase/m2R;
-  const pctVentas=(terBase/(m2R*pm2v))*100;
-  const terBaseV2=Math.round(terBase/area*V2_POR_M2);
+  const pctVentas=(terBase/R.ventas)*100;
+  const terBaseV2=Math.round(terBase/area/V2_POR_M2);
 
-  // Big result
   document.getElementById('t-result-big').innerHTML=`
     <div class="result-big-label">Valor máximo del terreno para el desarrollador</div>
     <div class="result-big-val">${usd(terBase)}</div>
     <div class="result-big-sub">${usd(Math.round(terBase/area))}/m² · ${usd(terBaseV2)}/v² · método residual estático</div>`;
 
-  // Advertencia precios terreno de mercado
+  // Advertencia IE
+  const avisoIE = !R.cumIE
+    ? `<div class="precio-aviso" style="border-color:#c0392b;color:#c0392b"><strong>(!) El programa excede el IE base de ${zonaG}:</strong> ${fmt(m2T)} m² contra ${fmt(m2E)} m² permitidos. El valor calculado supone construir más de lo que la norma permite sin incentivos — reducí unidades o área por unidad.</div>`
+    : '';
+
   const ref=TERRENO_REF[zonaP];
   let precioAvisoHtml='';
   if(ref){
@@ -1791,7 +1961,7 @@ function calcTasador(){
     const enRango=terM2>=ref.min&&terM2<=ref.max;
     const bajo=terM2<ref.min;
     precioAvisoHtml=`<div class="precio-aviso">
-      <strong>Referencia de mercado para terrenos en ${znm} (2024-2025):</strong> entre <strong>${usd(ref.min)}/m²</strong> y <strong>${usd(ref.max)}/m²</strong> — equivale a <strong>${usd(Math.round(ref.min*V2_POR_M2))}/v²</strong> a <strong>${usd(Math.round(ref.max*V2_POR_M2))}/v²</strong>.<br>
+      <strong>Referencia de mercado para terrenos en ${znm} (2024-2025):</strong> entre <strong>${usd(ref.min)}/m²</strong> y <strong>${usd(ref.max)}/m²</strong> — equivale a <strong>${usd(Math.round(ref.min/V2_POR_M2))}/v²</strong> a <strong>${usd(Math.round(ref.max/V2_POR_M2))}/v²</strong>.<br>
       <span style="font-size:10px;color:#555">${ref.nota}.</span><br><br>
       ${enRango?`<strong>✓ El valor calculado (${usd(terM2)}/m²) está dentro del rango de mercado.</strong> El proyecto podría ser viable si conseguís el terreno en ese rango.`
         :bajo?`<strong>(!) El valor calculado (${usd(terM2)}/m²) está por debajo del mínimo de mercado (${usd(ref.min)}/m²).</strong> Con los precios de venta actuales, el proyecto puede ser difícil de cerrar a precios de mercado del terreno en ${znm}. Revisá el margen objetivo, el programa o los acabados.`
@@ -1799,9 +1969,8 @@ function calcTasador(){
       <br><br><em style="font-size:10px;color:#666">(!) Los precios de terreno varían significativamente dentro de cada zona según ubicación específica, acceso a vías principales, topografía, servicios disponibles y si el lote está dentro o fuera de garita. El rango indicado es orientativo — siempre verificá con un corredor o avaluador local.</em>
     </div>`;
   }
-  document.getElementById('t-precio-ref').innerHTML=precioAvisoHtml||`<div class="precio-aviso"><strong>Sin referencia de precio de terreno.</strong> Seleccioná una zona postal para ver el rango de precios de mercado de terrenos en esa zona y compararlo con el valor calculado.</div>`;
+  document.getElementById('t-precio-ref').innerHTML=avisoIE+(precioAvisoHtml||`<div class="precio-aviso"><strong>Sin referencia de precio de terreno.</strong> Seleccioná una zona postal para ver el rango de precios de mercado de terrenos en esa zona y compararlo con el valor calculado.</div>`);
 
-  // Stress test
   document.getElementById('t-stress').innerHTML=`
     <thead><tr><th>Escenario</th><th>Precio venta</th><th>Valor máx. terreno</th></tr></thead>
     <tbody>
@@ -1811,73 +1980,192 @@ function calcTasador(){
       <tr class="stress-bad"><td>Pesimista (-20%)</td><td>${usd(Math.round(pm2v*.80))}/m²</td><td>${usd(terPes)}</td></tr>
     </tbody>`;
 
-  // Desglose
-  const ventasT=m2R*pm2v;
-  const margenAmt=ventasT*(margenObj/100);
-  const sotTasInfo = nivSotTas > 0 ?
-    `<tr><td style="color:#888;font-size:11px;padding-left:12px">${nivSotTas} nivel(es) sótano (${sotTas&&sotTas.anchoReal?sotTas.anchoReal+'×'+sotTas.largoReal+'m ':''} calculado auto · factor ×${factorSotTas})</td><td style="color:#888;font-size:11px">-${usd(costoSotTas)}</td></tr>` : '';
-
+  // Desglose: Ventas − costos − utilidad del desarrollador = terreno
+  const utilidad = R.ventas - C.total - terBase;
+  const neg=(t,v,sub)=>`<tr><td${sub?' style="color:#888;font-size:11px;padding-left:12px"':''}>${t}</td><td${sub?' style="color:#888;font-size:11px"':''}>-${usd(v)}</td></tr>`;
   document.getElementById('t-desglose').innerHTML=`
-    <tr><td>Ventas totales proyectadas (${nu} unid. × ${au} m² × ${usd(pm2v)}/m²)</td><td>${usd(ventasT)}</td></tr>
-    <tr><td>— Obra civil (${usd(cm2)}/m² · ${fmt(m2T,0)} m²)</td><td>-${usd(obraBase)}</td></tr>
-    ${sotTasInfo}
-    <tr><td>— Planificación y diseño (${di}%)</td><td>-${usd(cDi)}</td></tr>
-    <tr><td>— Administración y supervisión (${ad}%)</td><td>-${usd(cAd)}</td></tr>
-    <tr><td>— Instalaciones y equipo (${ins}%)</td><td>-${usd(cIns)}</td></tr>
-    <tr><td>— Urbanización y licencias</td><td>-${usd(cUrb+licE)}</td></tr>
-    <tr><td>— Margen del desarrollador (${margenObj}%)</td><td>-${usd(margenAmt)}</td></tr>
+    <tr><td>Ventas totales proyectadas (${nu} unid. × ${au} m² × ${usd(pm2v)}/m²)</td><td>${usd(R.ventas)}</td></tr>
+    ${neg(`Obra sobre nivel (${usd(cm2)}/m² · ${fmt(m2T)} m²)`,C.obraSup)}
+    ${C.obraSot>0?neg(`Sótano: ${sot.niveles} nivel(es) · ${fmt(sot.m2Sot)} m² · ${est.total} plazas totales (${est.res} res. + ${est.vis} visitas)`,C.obraSot):''}
+    ${neg('Planificación, administración e instalaciones (24%)',C.cDi+C.cAd+C.cIns)}
+    ${neg(`Imprevistos (${dev.imp}%)`,C.cImp)}
+    ${neg('Urbanización y licencias',C.cUrb+C.licE)}
+    ${neg(`Comercialización (${dev.com}%)`,C.cCom)}
+    ${neg(`Financiamiento (${dev.finPct}% · ${dev.finTasa}% anual · ${dev.finMeses} meses)`,C.cFin)}
+    ${dev.iva==='si'?neg('IVA neto (estimación — confirmar con contador)',C.cIva):''}
+    ${neg(`Utilidad del desarrollador (${margenObj}% sobre inversión total)`,utilidad)}
     <tr class="total-row"><td>Valor máximo del terreno</td><td>${usd(terBase)}</td></tr>
-    <tr><td style="color:#888;font-size:11px">Incidencia sobre área rentable</td><td style="color:#888;font-size:11px">${usd(Math.round(incidencia))}/m² (${pct(pctVentas)} de ventas)</td></tr>`;
+    <tr><td style="color:#888;font-size:11px">Incidencia sobre área vendible</td><td style="color:#888;font-size:11px">${usd(Math.round(incidencia))}/m² (${pct(pctVentas)} de ventas)</td></tr>`;
 
   // Semáforo
-  const enRango2=ref&&(Math.round(terBase/area)>=ref.min&&Math.round(terBase/area)<=ref.max);
-  const bajo2=ref&&Math.round(terBase/area)<ref.min;
-  const cs=!ref||enRango2?'sem-verde':bajo2?'sem-rojo':'sem-verde';
+  const terM2b=Math.round(terBase/area);
+  const enRango2=ref&&(terM2b>=ref.min&&terM2b<=ref.max);
+  const bajo2=ref&&terM2b<ref.min;
+  const cs=bajo2?'sem-rojo':'sem-verde';
   const ds=cs==='sem-verde'?'dot-v':'dot-r';
   const ts=!ref?`El valor máximo calculado es ${usd(terBase)}. Seleccioná una zona postal para compararlo con el mercado actual.`
-    :enRango2?`El valor calculado (${usd(Math.round(terBase/area))}/m²) está dentro del rango de mercado para ${znm}. Úsalo como techo de negociación — no es el precio de cierre, es el máximo que el proyecto puede soportar.`
-    :bajo2?`El valor calculado (${usd(Math.round(terBase/area))}/m²) está por debajo del mínimo de mercado para ${znm} (${usd(ref.min)}/m²). El proyecto puede ser difícil de cerrar a precios actuales de terreno. Revisá el programa o el margen objetivo.`
+    :enRango2?`El valor calculado (${usd(terM2b)}/m²) está dentro del rango de mercado para ${znm}. Úsalo como techo de negociación — no es el precio de cierre, es el máximo que el proyecto puede soportar.`
+    :bajo2?`El valor calculado (${usd(terM2b)}/m²) está por debajo del mínimo de mercado para ${znm} (${usd(ref.min)}/m²). El proyecto puede ser difícil de cerrar a precios actuales de terreno. Revisá el programa o el margen objetivo.`
     :`El valor calculado supera el rango típico de mercado en ${znm}, lo que es favorable: podés conseguir un terreno a precio de mercado y el proyecto seguiría siendo viable.`;
   document.getElementById('t-sem').innerHTML=`<div class="sem-box ${cs}"><div class="sem-dot ${ds}"></div><div>${ts}</div></div>`;
   showTasadorStory(zonaP, area, terBase, nu, au, pm2v, ref);
 
-  // Modo vendedor: mostrar tres escenarios
+  // Modo vendedor: tres escenarios con el MISMO motor
+  const vDiv = document.getElementById('t-result-big-vend');
   if(MODO_TAS === 'vend'){
-    const vDiv = document.getElementById('t-result-big-vend');
     const tipos = [
       {label:'Proyecto pequeño', u:50,  color:'#555'},
       {label:'Proyecto estándar', u:80,  color:'#000'},
       {label:'Proyecto premium', u:120, color:'#1f7a3b'},
     ];
-    const g2 = POT[zonaG];
-    const ci2 = 0.20;
     let scenHtml = `<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#000;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #e0e0e0">Rango de valor según tipo de proyecto del desarrollador</div>`;
     scenHtml += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">`;
     tipos.forEach(t => {
-      const u2 = Math.max(1, Math.floor(area * g2.ie / (1+ci2) / t.u));
-      const m2r2 = u2 * t.u;
-      const m2t2 = Math.round(m2r2 * (1+ci2));
-      const vt = pm2v ? m2r2 * pm2v : null;
-      const margenAmt2 = vt ? vt * (margenObj/100) : null;
-      const cST2 = m2t2 * cm2 * (1 + (di+ad+ins)/100) + area*18 + Math.round(m2t2*2.5);
-      const terMax2 = vt ? Math.max(0, vt - cST2 - (margenAmt2||0)) : null;
-      const pm2Ter2 = terMax2 && area > 0 ? Math.round(terMax2/area) : null;
-      scenHtml += `<div style="border:1.5px solid ${t.label==='Proyecto estándar'?'#000':'#e0e0e0'};border-radius:8px;padding:10px 12px;${t.label==='Proyecto estándar'?'background:#f9f9f9':''}">
+      const pr = programaAuto(zonaG, area, t.u, 'base', 3, 0.20);
+      const r2 = pr.unidades>0 ? evaluarTasador(zonaG, area, pr.unidades, t.u, 20, cm2, pm2v) : {sot:{niveles:0}};
+      const terMax2 = pr.unidades>0 ? valorResidual(r2.ventas, r2.C.total, margenObj) : 0;
+      const pm2Ter2 = terMax2>0 ? Math.round(terMax2/area) : null;
+      const esStd = t.label==='Proyecto estándar';
+      scenHtml += `<div style="border:1.5px solid ${esStd?'#000':'#e0e0e0'};border-radius:8px;padding:10px 12px;${esStd?'background:#f9f9f9':''}">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:${t.color};margin-bottom:4px">${t.label}</div>
-        <div style="font-size:9px;color:#888;margin-bottom:6px">${u2} unid. × ${t.u}m²</div>
-        <div style="font-size:18px;font-weight:900;letter-spacing:-.02em;color:#000">${terMax2?'$'+Math.round(terMax2).toLocaleString('es-GT'):'—'}</div>
-        <div style="font-size:10px;color:#555;margin-top:3px">${pm2Ter2?'$'+pm2Ter2.toLocaleString('es-GT')+'/m²':'sin precio ref.'}</div>
+        <div style="font-size:9px;color:#888;margin-bottom:6px">${pr.unidades} unid. × ${t.u} m² · ${r2.sot.niveles} sót.</div>
+        <div style="font-size:18px;font-weight:900;letter-spacing:-.02em;color:#000">${terMax2>0?usd(terMax2):'$0'}</div>
+        <div style="font-size:10px;color:#555;margin-top:3px">${pm2Ter2?usd(pm2Ter2)+'/m²':'no cierra'}</div>
       </div>`;
     });
     scenHtml += `</div>`;
-    scenHtml += `<div style="font-size:11px;color:#444;line-height:1.5">El escenario <strong>Estándar</strong> es el más probable en el mercado actual. Los tres escenarios muestran el rango de lo que distintos desarrolladores podrían ofrecerte, dependiendo del tipo de proyecto que evalúen. A mayor margen que exija el desarrollador, menor el valor que puede pagar.</div>`;
+    scenHtml += `<div style="font-size:11px;color:#444;line-height:1.5">El escenario <strong>Estándar</strong> es el más probable en el mercado actual. Los tres escenarios usan el mismo cálculo completo (sótano, costos del desarrollador e IVA). A mayor margen que exija el desarrollador, menor el valor que puede pagar.</div>`;
     if(vDiv){ vDiv.innerHTML = scenHtml; vDiv.style.display = 'block'; }
     document.getElementById('t-result-big').style.display = 'none';
   } else {
-    const vDiv2 = document.getElementById('t-result-big-vend');
-    if(vDiv2) vDiv2.style.display = 'none';
+    if(vDiv) vDiv.style.display = 'none';
     document.getElementById('t-result-big').style.display = 'block';
   }
+}
+
+
+// ==================== MI TERRENO (modo simple) ====================
+// Supuestos fijos y conservadores. El detalle se ajusta en el Tasador.
+const SUPUESTOS_SIMPLES = {tipoU:80, cm2:580, margen:25, plazasU:1, m2Plaza:30, cSot:700,
+  dev:{com:4, imp:5, finTasa:9, finMeses:24, finPct:70, iva:'si'}};
+
+function syncVarasM(from){
+  const m2=document.getElementById('m-area'), v2=document.getElementById('m-area-v2');
+  if(from==='m2') v2.value = m2.value ? Math.round(parseFloat(m2.value)*V2_POR_M2) : '';
+  else m2.value = v2.value ? Math.round(parseFloat(v2.value)/V2_POR_M2) : '';
+}
+
+// Redondeo amigable para el dueño: $5.5M, $850K
+function redondo(v){
+  if(v>=1e6) return '$'+(Math.round(v/1e5)/10).toLocaleString('es-GT',{minimumFractionDigits:1,maximumFractionDigits:1})+'M';
+  if(v>=1e4) return '$'+Math.round(v/1e3).toLocaleString('es-GT')+'K';
+  return usd(v);
+}
+
+function valorSimple(zonaG, area, tipoU, precio){
+  const S=SUPUESTOS_SIMPLES;
+  const pr = programaAuto(zonaG, area, tipoU, 'base', 3, 0.20);
+  if(pr.unidades<1) return {pr, r:null, valor:0};
+  const r = evaluarProyecto({zonaG, esc:'base', area, ancho:0, largo:0,
+    nu:pr.unidades, au:tipoU, ci:20, cm2:S.cm2, di:5.5, ad:5.5, ins:13, altPT:3, am:0,
+    plazasU:S.plazasU, visitas:null, m2Plaza:S.m2Plaza, cSot:S.cSot, nivDecl:0, areaDecl:0,
+    pv:precio, dev:S.dev});
+  return {pr, r, valor:valorResidual(r.ventas, r.C.total, S.margen)};
+}
+
+function calcTerreno(){
+  const zonaG=document.getElementById('m-g').value;
+  const zonaP=document.getElementById('m-zp').value;
+  const area=leerNum('m-area',0);
+  const res=document.getElementById('m-resultado'), ph=document.getElementById('m-placeholder');
+  const faltan=[]; if(!zonaG) faltan.push('la zona G'); if(!zonaP) faltan.push('la zona postal'); if(!area) faltan.push('el área');
+  if(faltan.length){ res.style.display='none'; ph.style.display='block'; ph.textContent='Falta '+faltan.join(', ')+'.'; return; }
+  ph.style.display='none'; res.style.display='block';
+
+  const S=SUPUESTOS_SIMPLES;
+  const pv=LAB1_VENTA[zonaP];
+  const znm=ZONA_NOM[zonaP];
+  const ref=TERRENO_REF[zonaP];
+  const big=document.getElementById('m-big');
+  const explica=document.getElementById('m-explica');
+  const limpiar=()=>{['m-mercado','m-escenarios'].forEach(i=>document.getElementById(i).innerHTML='');};
+
+  if(zonaG==='G1'){
+    big.innerHTML=`<div class="result-big-label">Zona G1</div><div class="result-big-val" style="font-size:22px">No aplica para desarrollo</div>`;
+    explica.innerHTML='G1 es parte del Cinturón Ecológico y no está pensada para edificios. Si tu terreno tiene una parte G1 y otra G3, G4 o G5, calculá con el área y la zona G de la parte urbana: la edificabilidad de la franja G1 normalmente se traslada ahí. Verificalo con la DCT.';
+    limpiar(); document.getElementById('m-supuestos').innerHTML=''; return;
+  }
+
+  const base=valorSimple(zonaG, area, S.tipoU, pv);
+  const bajo=valorSimple(zonaG, area, S.tipoU, Math.round(pv*0.90));
+
+  if(base.pr.unidades<4){
+    big.innerHTML=`<div class="result-big-label">Terreno pequeño para ${zonaG}</div><div class="result-big-val" style="font-size:22px">No es un terreno para edificio</div>`;
+    explica.innerHTML=`Con ${fmt(area)} m² en ${zonaG} se pueden construir unos ${fmt(area*POT[zonaG].ie)} m²: caben ${base.pr.unidades<1?'menos de un apartamento':'solo '+base.pr.unidades+' apartamento(s)'}. A esa escala ningún desarrollador calcula así; el valor de tu terreno lo define el mercado de casas y lotes de la zona, o lo que valdría unido con terrenos vecinos.`;
+    document.getElementById('m-supuestos').innerHTML='';
+    limpiar(); return;
+  }
+
+  const r=base.r;
+  if(base.valor<=0){
+    big.innerHTML=`<div class="result-big-label">Con los precios de ${znm}</div><div class="result-big-val" style="font-size:22px">Un edificio no cierra</div>`;
+    explica.innerHTML=`Lo que venderían los apartamentos (~${usd(r.ventas)}) no alcanza para cubrir construcción, costos y la ganancia mínima de un desarrollador. En esta zona el valor de tu terreno lo define el mercado de casas o de lotes, no el de edificios.`;
+  } else {
+    const lo=Math.min(bajo.valor, base.valor), hi=base.valor;
+    const m2=v=>Math.round(v/area), v2=v=>Math.round(v/area/V2_POR_M2);
+    big.innerHTML=`
+      <div class="result-big-label">Un desarrollador podría pagar hasta</div>
+      <div class="result-big-val">${redondo(lo)} – ${redondo(hi)}</div>
+      <div class="result-big-sub">${usd(m2(lo))} – ${usd(m2(hi))} por m² · ${usd(v2(lo))} – ${usd(v2(hi))} por vara²</div>`;
+    const ganancia = r.ventas - r.C.total - hi;
+    explica.innerHTML=`<strong>Cómo llegamos a este número.</strong> En tu terreno cabe un edificio de unos <strong>${base.pr.unidades} apartamentos de ${S.tipoU} m²</strong> (${base.pr.niveles} niveles${r.sot.niveles?', '+r.sot.niveles+' de sótano':''}). Vendidos al precio de ${znm}, suman ~<strong>${usd(r.ventas)}</strong>. De ahí salen la construcción y los costos del proyecto (~${usd(r.C.total)}) y la ganancia del desarrollador (~${usd(ganancia)}). Lo que queda, <strong>${usd(hi)}</strong>, es lo máximo que puede pagar por el terreno. El número bajo del rango supone que los apartamentos se venden 10% más baratos.`;
+  }
+
+  // Comparación con precios de terrenos publicados
+  let merc='';
+  if(ref && base.valor>0){
+    const hiM2=Math.round(base.valor/area);
+    const txt = hiM2<ref.min ? 'El valor calculado queda <strong>por debajo</strong> de lo que se pide por terrenos en la zona: es común que los precios publicados estén por encima de lo que un edificio puede pagar.'
+      : hiM2>ref.max ? 'El valor calculado queda <strong>por encima</strong> de lo que se pide por terrenos en la zona: tu terreno tiene buen potencial para un edificio.'
+      : 'El valor calculado queda <strong>dentro</strong> del rango de lo que se pide por terrenos en la zona.';
+    merc=`<div class="precio-aviso">Terrenos publicados en ${znm} (2024-2025): <strong>${usd(ref.min)} – ${usd(ref.max)}/m²</strong> (${usd(Math.round(ref.min/V2_POR_M2))} – ${usd(Math.round(ref.max/V2_POR_M2))}/v²). ${txt}</div>`;
+  }
+  if(zonaG==='G2') merc+=`<div class="precio-aviso" style="border-color:#c79200;color:#8a6500">En G2 la norma limita la densidad (IE ${POT.G2.ie}, 40% permeable). Pocos desarrolladores hacen edificios aquí; el valor real suele venir del mercado de casas.</div>`;
+  document.getElementById('m-mercado').innerHTML=merc;
+
+  // Tres tipos de proyecto
+  const tipos=[{l:'Aptos. pequeños',u:50},{l:'Aptos. medianos',u:80},{l:'Aptos. grandes',u:120}];
+  document.getElementById('m-escenarios').innerHTML=`<div class="metrics-grid">`+tipos.map(t=>{
+    const v=valorSimple(zonaG, area, t.u, pv);
+    const est=t.u===80;
+    return `<div class="metric-box" style="${est?'':'border-color:#d0d0d0'}"><div class="metric-val">${v.valor>0?usd(v.valor):'No cierra'}</div><div class="metric-lbl">${t.l} (~${t.u} m²)</div><div class="metric-sub">${v.pr.unidades>0?v.pr.unidades+' unidades':'no caben'}${est?' · el más común':''}</div></div>`;
+  }).join('')+`</div><div class="note-text">Cada desarrollador evalúa distinto: por eso dos ofertas por el mismo terreno pueden ser muy diferentes.</div>`;
+
+  document.getElementById('m-supuestos').innerHTML=`
+    Precio de venta de apartamentos: <strong>${usd(pv)}/m²</strong> (referencia conservadora de ${znm}, Lab 1 UMBRAL 2025).<br>
+    Construcción con acabado medio: <strong>${usd(S.cm2)}/m²</strong>, más diseño, supervisión e instalaciones (24%).<br>
+    Parqueos: <strong>1 por apartamento</strong> más visitas. Sótano a ${usd(S.cSot)}/m² cuando no caben en superficie.<br>
+    Costos del desarrollador: ventas ${S.dev.com}%, imprevistos ${S.dev.imp}%, financiamiento de obra e IVA neto.<br>
+    Ganancia del desarrollador: <strong>${S.margen}% sobre la inversión total</strong>.<br>
+    Normativa: IE base de ${zonaG} (${POT[zonaG].ie}), sin incentivos. No considera restricciones especiales de tu predio (alineación, aeronáutica, zona histórica, ríos).`;
+}
+
+function abrirEnTasador(){
+  const btn=document.querySelector(".main-tab[onclick*=\"'tasador'\"]");
+  setTab('tasador',btn); setModoTas('dev');
+  const zonaG=document.getElementById('m-g').value, zonaP=document.getElementById('m-zp').value, area=leerNum('m-area',0);
+  document.getElementById('t-g').value=zonaG;
+  const tzp=document.getElementById('t-zp'); tzp.value=zonaP; syncTasadorZona();
+  document.getElementById('t-area').value=area; syncVaras('m2');
+  const pr=programaAuto(zonaG, area, 80, 'base', 3, 0.20);
+  if(pr.unidades>0){ document.getElementById('t-nu').value=pr.unidades; document.getElementById('t-au').value=80; }
+  calcTasador();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function irATerreno(){
+  const btn=document.querySelector(".main-tab[onclick*=\"'terreno'\"]");
+  setTab('terreno',btn);
 }
 
 // ── Pre-llenar desde URL params (viene del Mapa POT) ─────────
@@ -1893,11 +2181,16 @@ function calcTasador(){
   if (!zona && !area) return; // nada que pre-llenar
 
   // Seleccionar tab según parámetro modo
-  const tabTarget = modo === 'pro' ? 'pro' : modo === 'tasador' ? 'tasador' : 'lite';
+  const tabTarget = modo === 'pro' ? 'pro' : modo === 'tasador' ? 'tasador' : modo === 'terreno' ? 'terreno' : 'lite';
   setTimeout(() => {
     const tabBtn = document.querySelector(`.main-tab[onclick*="'${tabTarget}'"]`);
     if (tabBtn) tabBtn.click();
   }, 50);
+
+  // Pre-llenar Mi terreno
+  if (zona) { const mg=document.getElementById('m-g'); if(mg) mg.value=zona; }
+  if (area) { const ma=document.getElementById('m-area'); if(ma){ ma.value=area; syncVarasM('m2'); } }
+  if (zonaPost) { const mz=document.getElementById('m-zp'); if(mz) mz.value=zonaPost; }
 
   // Pre-llenar campos Lite
   if (zona) {
@@ -1929,10 +2222,8 @@ function calcTasador(){
     if (pw && !pw.value) pw.value = side;
     if (pl && !pl.value) pl.value = side;
   }
-  if (alt) {
-    const pa2 = document.getElementById('p-alt');
-    if (pa2) pa2.value = alt;
-  }
+  // V10: 'alt' del mapa es la altura máxima permitida, NO la altura piso-techo.
+  // No se escribe en p-alt; la altura sale de la zona G.
   if (zonaPost) {
     const pzp = document.getElementById('p-zp');
     if (pzp) pzp.value = zonaPost;
@@ -1948,7 +2239,7 @@ function calcTasador(){
     const ta = document.getElementById('t-area');
     if (ta) ta.value = area;
     const ta2 = document.getElementById('t-area-v2');
-    if (ta2) ta2.value = area;
+    if (ta2) ta2.value = Math.round(parseFloat(area)*V2_POR_M2);
     const side = Math.round(Math.sqrt(parseFloat(area)));
     const tw = document.getElementById('t-ancho');
     const tl = document.getElementById('t-largo');
@@ -1981,6 +2272,7 @@ function calcTasador(){
     const parts = [];
     if (zona) parts.push(`Zona ${zona}`);
     if (area) parts.push(`${parseInt(area).toLocaleString('es-GT')} m²`);
+    if (alt) parts.push(`altura permitida ${alt} m`);
     banner.innerHTML = `
       <span>Datos cargados desde el Mapa POT · ${parts.join(' · ')}</span>
       <a href="https://mapa-pot.umbralgt.com" style="color:#0a0a0a;font-weight:700;font-size:10px;letter-spacing:0.04em;text-transform:uppercase;text-decoration:none;white-space:nowrap">← Volver al mapa</a>
@@ -2004,12 +2296,10 @@ function calcTasador(){
       <a href="https://earth.google.com/web/" target="_blank" rel="noopener" style="color:#c79200;font-weight:700">Google Earth Web ↗</a>
       usando la herramienta de medición.
     `;
-    if (mainTabs && mainTabs.parentNode) {
-      mainTabs.parentNode.insertBefore(notaAncho, mainTabs.nextSibling);
-    }
-    // Insert after the main-tabs div
+    // V10: mainTabs se declara ANTES de usarse (antes rompía el resto del script)
     const mainTabs = document.querySelector('.main-tabs');
     if (mainTabs && mainTabs.parentNode) {
+      mainTabs.parentNode.insertBefore(notaAncho, mainTabs.nextSibling);
       mainTabs.parentNode.insertBefore(banner, mainTabs.nextSibling);
     }
   }
@@ -2198,7 +2488,7 @@ const AYUDA = {
   },
   't-margen': {
     titulo: 'Margen objetivo del desarrollador',
-    cuerpo: 'Es la ganancia mínima que el desarrollador necesita para que el proyecto sea viable. En Guatemala el margen de referencia es 25-30% sobre la inversión total. A mayor margen que exijas, menor el valor que puede pagar por el terreno. Si bajás el margen a 15%, el terreno puede valer más — pero el desarrollador asume más riesgo.',
+    cuerpo: 'Es la ganancia mínima que el desarrollador necesita para que el proyecto sea viable. En Guatemala el margen de referencia es 25-30% sobre la inversión total (terreno + todos los costos). Un 25% sobre inversión equivale a ~20% sobre ventas. A mayor margen que exijas, menor el valor que puede pagar por el terreno. Si bajás el margen a 15%, el terreno puede valer más — pero el desarrollador asume más riesgo.',
     fuente: 'Referencia mercado inmobiliario Guatemala 2018-2019'
   },
   't-nu': {
@@ -2274,6 +2564,16 @@ const AYUDA = {
     titulo: 'Modo "Quiero vender mi terreno" — ¿cómo funciona?',
     cuerpo: 'Si querés vender tu terreno a un desarrollador, este modo calcula lo que ese desarrollador podría pagarte. La calculadora estima qué proyecto haría en tu terreno y cuánto puede ofrecer para que su negocio sea viable. Verás tres escenarios: proyecto pequeño, estándar y premium. El estándar es el más probable en el mercado actual.',
     fuente: 'Método residual estático · Lab 1 UMBRAL 2025'
+  },
+  'est-diseno': {
+    titulo: 'Estacionamientos: norma vs. mercado',
+    cuerpo: 'La Municipalidad pide un mínimo (en G3-G5: 1 plaza cada 300 m² residenciales + 1 de visitas cada 4 apartamentos + 1 cada 75 m² de amenidades). Pero el mercado suele exigir más: en zonas como 10, 14 o 15 los compradores esperan 1 a 2 plazas por apartamento. Elegí cuántos parqueos tendrá cada apartamento. "Mitad con 1, mitad con 2" significa que la mitad de los apartamentos tiene un parqueo y la otra mitad dos (en 100 apartamentos: 150 parqueos). Las visitas se calculan con la norma si dejás el campo vacío; la calculadora usa lo que sea mayor entre tu diseño y la norma. Si no caben en superficie, calcula el sótano con los m² por plaza (incluye rampas y circulación, típico 28-32 m²) sin ocupar el área permeable.',
+    fuente: 'COM-03-2009 · COM-29-2025 (verificar vigencia con DCT) · criterio de mercado'
+  },
+  'dev-costos': {
+    titulo: 'Costos del desarrollador',
+    cuerpo: 'Son costos reales que no aparecen en el presupuesto de obra pero sí en el de un desarrollador. Comercialización: corredores y marketing (3-5% de ventas). Imprevistos: colchón sobre la obra (3-5%). Financiamiento: intereses del crédito de construcción, calculados sobre un saldo promedio del 50% durante el plazo. IVA neto: en la primera venta de un inmueble nuevo se cobra 12% de IVA; el desarrollador descuenta el IVA que pagó en materiales y servicios (crédito fiscal) y el costo real es la diferencia. Es una estimación simplificada — la estructura fiscal de cada proyecto varía, confirmala con tu contador.',
+    fuente: 'Ley del IVA (SAT) · referencias de mercado GT'
   },
 };
 
