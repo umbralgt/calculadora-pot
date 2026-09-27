@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora POT · UMBRAL</title>
-<!-- V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
+<!-- V12 · visitas por m² (COM-03-2009 Anexo I) · V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -496,7 +496,7 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
     <div class="field-group">
       <label class="field-label">Plazas visitas</label>
       <input type="number" class="field-input" id="p-pv" placeholder="Norma" min="0">
-      <div class="field-help">Vacío = norma</div>
+      <div class="field-help">Vacío = norma (por m²)</div>
     </div>
     <div class="field-group">
       <label class="field-label">m² por plaza</label>
@@ -822,7 +822,7 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
     <div class="field-group">
       <label class="field-label">Plazas visitas</label>
       <input type="number" class="field-input" id="t-pv" placeholder="Norma" min="0">
-      <div class="field-help">Vacío = norma</div>
+      <div class="field-help">Vacío = norma (por m²)</div>
     </div>
     <div class="field-group">
       <label class="field-label">m² por plaza</label>
@@ -1030,11 +1030,21 @@ function paramsEscenario(zonaG, esc){
 
 // Estacionamientos: mínimo normativo vs. diseño elegido por el usuario.
 // Cada componente nunca queda por debajo de la norma.
+// Visitas según Anexo I del COM-03-2009: por m² residenciales totales, no por unidad.
+// (Límites intermedios 1,500/3,000/4,500 m²: verificar con el texto oficial.)
+function visitasNorma(m2R){
+  if(m2R<500) return 0;
+  if(m2R<=1500) return 3;
+  if(m2R<=3000) return 4;
+  if(m2R<=4500) return 6;
+  return Math.ceil(m2R/800);
+}
+
 function estacionamientos(o){
   const esZonaAlta = o.zonaG==='G3'||o.zonaG==='G4'||o.zonaG==='G5';
   // COM-03-2009 (ratios trabajados en versiones anteriores) · VERIFICAR vigencia con COM-29-2025
   const normRes = esZonaAlta ? Math.ceil(o.m2R/300) : Math.ceil(o.m2R/100);
-  const normVis = Math.max(1, Math.ceil(o.nu/4));
+  const normVis = visitasNorma(o.m2R);
   const am = o.am>0 ? Math.ceil(o.am/75) : 0; // COM-29-2025: 1 c/75 m² áreas sociales
   const disRes = Math.ceil(o.nu*o.plazasU);
   const disVis = (o.visitas!=null && o.visitas>=0) ? o.visitas : normVis;
@@ -1761,7 +1771,7 @@ function calcPro(){
     <tr class="total-row"><td>Inversión total</td><td>${usd(cT)}</td></tr>
     ${fila('Costo/m² construido sobre nivel (sin terreno)',usd(cST/m2T)+'/m²',true)}`;
 
-  document.getElementById('p-fcost').textContent='Costos de obra: proyectos reales Ciudad de Guatemala, ajustados +28% inflación 2019-2025 (Banguat). Sótano: plazas × m²/plaza (incluye rampas y circulación), nunca sobre el área permeable. Estacionamientos: mínimo municipal (G3/G4/G5: 1c/300 m² residencial; G1/G2: 1c/100 m²; visitas 1c/4 unidades; amenidades 1c/75 m²) o tu diseño, lo que sea mayor. IVA: estimación simplificada, confirmar estructura fiscal con contador. Todos los valores son editables.';
+  document.getElementById('p-fcost').textContent='Costos de obra: proyectos reales Ciudad de Guatemala, ajustados +28% inflación 2019-2025 (Banguat). Sótano: plazas × m²/plaza (incluye rampas y circulación), nunca sobre el área permeable. Estacionamientos: mínimo municipal (G3/G4/G5: 1c/300 m² residencial; G1/G2: 1c/100 m²; visitas según m² residenciales (proyectos >4,500 m²: 1c/800 m²); amenidades 1c/75 m²) o tu diseño, lo que sea mayor. IVA: estimación simplificada, confirmar estructura fiscal con contador. Todos los valores son editables.';
 
   // ---- Venta ----
   const ivB=pm2v?R.ventas:null;
@@ -2567,7 +2577,7 @@ const AYUDA = {
   },
   'est-diseno': {
     titulo: 'Estacionamientos: norma vs. mercado',
-    cuerpo: 'La Municipalidad pide un mínimo (en G3-G5: 1 plaza cada 300 m² residenciales + 1 de visitas cada 4 apartamentos + 1 cada 75 m² de amenidades). Pero el mercado suele exigir más: en zonas como 10, 14 o 15 los compradores esperan 1 a 2 plazas por apartamento. Elegí cuántos parqueos tendrá cada apartamento. "Mitad con 1, mitad con 2" significa que la mitad de los apartamentos tiene un parqueo y la otra mitad dos (en 100 apartamentos: 150 parqueos). Las visitas se calculan con la norma si dejás el campo vacío; la calculadora usa lo que sea mayor entre tu diseño y la norma. Si no caben en superficie, calcula el sótano con los m² por plaza (incluye rampas y circulación, típico 28-32 m²) sin ocupar el área permeable.',
+    cuerpo: 'La Municipalidad pide un mínimo (en G3-G5: 1 plaza cada 300 m² residenciales + visitas según los m² residenciales del proyecto (en proyectos de más de 4,500 m², 1 cada 800 m²) + 1 cada 75 m² de amenidades). Pero el mercado suele exigir más: en zonas como 10, 14 o 15 los compradores esperan 1 a 2 plazas por apartamento. Elegí cuántos parqueos tendrá cada apartamento. "Mitad con 1, mitad con 2" significa que la mitad de los apartamentos tiene un parqueo y la otra mitad dos (en 100 apartamentos: 150 parqueos). Las visitas se calculan con la norma si dejás el campo vacío; la calculadora usa lo que sea mayor entre tu diseño y la norma. Si no caben en superficie, calcula el sótano con los m² por plaza (incluye rampas y circulación, típico 28-32 m²) sin ocupar el área permeable.',
     fuente: 'COM-03-2009 · COM-29-2025 (verificar vigencia con DCT) · criterio de mercado'
   },
   'dev-costos': {
