@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora POT · UMBRAL</title>
-<!-- V13 · medidas del predio y zona postal desde el mapa · V12 · visitas por m² (COM-03-2009 Anexo I) · V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
+<!-- V14 · parámetros verificados con el reglamento (altura ampliada G1/G2, bloques y separaciones por zona) · V13 · medidas del predio y zona postal desde el mapa · V12 · visitas por m² (COM-03-2009 Anexo I) · V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -314,7 +314,8 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
       <div class="conditions-title">Condiciones especiales — siempre verificar con la DCT</div>
       <div class="conditions-body">
         Alineación municipal · Zona histórica o Centro Histórico · Restricción aeronáutica civil (prevalece sobre POT si es menor) · PLOT vigente en la delegación · Plan Parcial · G0/G1 dentro del predio · Franjas de protección de ríos (≥15m de cada ribera) · Incentivos disponibles que pueden ampliar el IE.<br><br>
-        <strong>En proyectos con bloque superior (>16m):</strong> separación mínima de 5m a colindancias — menos de 5m requiere JOT+VEC. Lado mínimo de patios y pozos de luz: 1/4 de la altura del bloque inferior en Bi, 1/8 de la altura del bloque superior en Bs. Verificar con arquitecto.<br><br>
+        <strong>Bloque inferior y bloque superior:</strong> el bloque inferior puede pegarse a todos los linderos hasta 8 m (G1, G2), 12 m (G3) o 16 m (G4, G5). Por encima, el bloque superior debe separarse 3 m (G1–G3), 4 m (G4) o 5 m (G5) de <em>todos</em> los linderos, incluido el frente hacia la calle. Una separación menor requiere resolución de la Junta Directiva con consulta a vecinos.<br><br>
+        <strong>Patios y pozos de luz (solo si tienen ventanas):</strong> lado mínimo de 1/4 de la altura del bloque inferior; en el bloque superior, 1/8 de su altura, pero nunca menos que el del bloque inferior ni menos de 1.50 m. Fuente: POT COM-030-08, arts. 43-47 y 47 Bis.<br><br>
         <strong>Predios con doble zona G o afectaciones:</strong> los parámetros pueden variar por tramos. Siempre verificar en <strong>vu.muniguate.com</strong> o en la DCT, Palacio Municipal zona 1.
       </div>
     </div>
@@ -506,7 +507,7 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
     <div class="field-group">
       <label class="field-label">Sótano USD/m²</label>
       <input type="number" class="field-input" id="p-csot" value="700" min="300">
-      <div class="field-help">Provisional</div>
+      <div class="field-help">Estimado, editable</div>
     </div>
   </div>
   <div class="field-help" style="margin:-6px 0 14px">Se usa lo que sea mayor entre tu diseño y el mínimo municipal. El sótano nunca ocupa el área permeable.</div>
@@ -832,7 +833,7 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
     <div class="field-group">
       <label class="field-label">Sótano USD/m²</label>
       <input type="number" class="field-input" id="t-csot" value="700" min="300">
-      <div class="field-help">Provisional</div>
+      <div class="field-help">Estimado, editable</div>
     </div>
   </div>
   <div class="field-help" style="margin:-6px 0 14px">Se usa lo que sea mayor entre tu diseño y el mínimo municipal. El sótano nunca ocupa el área permeable.</div>
@@ -1169,12 +1170,13 @@ function valorResidual(ventas, costosSinTerreno, margenPct){
 // ie_max = IE aumentado (solo G4/G5, aportación urbanística, COM-48-2024)
 // alt = altura base · alt_a = altura ampliada · alt_max = altura aumentada (solo G4/G5)
 // alt_max sujeto a límites DGAC — verificar por ubicación específica
+// V14: parámetros verificados contra el reglamento POT (arts. 42-47, 47 Bis). Ver Ficha normativa POT.
 const POT = {
-  G1:{ie:1.2, ie_a:1.8,  ie_max:null, alt:16,  alt_a:16,  alt_max:null, perm:.70,bs:8, sepBS:3,fDCT:20,aDCT:1000,nom:'Rural'},
-  G2:{ie:1.8, ie_a:2.7,  ie_max:null, alt:16,  alt_a:16,  alt_max:null, perm:.40,bs:8, sepBS:3,fDCT:8, aDCT:120, nom:'Semiurbana'},
+  G1:{ie:1.2, ie_a:1.8,  ie_max:null, alt:16,  alt_a:24,  alt_max:null, perm:.70,bs:8, sepBS:3,fDCT:20,aDCT:1000,nom:'Rural'},
+  G2:{ie:1.8, ie_a:2.7,  ie_max:null, alt:16,  alt_a:24,  alt_max:null, perm:.40,bs:8, sepBS:3,fDCT:8, aDCT:120, nom:'Semiurbana'},
   G3:{ie:2.7, ie_a:4.0,  ie_max:null, alt:16,  alt_a:24,  alt_max:null, perm:.10,bs:12,sepBS:3,fDCT:3, aDCT:60,  nom:'Urbana'},
-  G4:{ie:4.0, ie_a:6.0,  ie_max:9.0,  alt:32,  alt_a:48,  alt_max:96,   perm:.00,bs:16,sepBS:4,fDCT:15,aDCT:450, nom:'Central'}, // fDCT:15m y aDCT:450m² según tabla POT — verificar con DCT
-  G5:{ie:6.0, ie_a:9.0,  ie_max:11.0, alt:64,  alt_a:96,  alt_max:128,  perm:.00,bs:16,sepBS:5,fDCT:21,aDCT:600, nom:'Núcleo'} // ie_max:11.0 según COM-48-2024 — verificar texto oficial con DCT
+  G4:{ie:4.0, ie_a:6.0,  ie_max:9.0,  alt:32,  alt_a:48,  alt_max:96,   perm:.00,bs:16,sepBS:4,fDCT:15,aDCT:450, nom:'Central'}, // Confirmado: POT COM-030-08 art. 46 (texto con reformas 2011-2013)
+  G5:{ie:6.0, ie_a:9.0,  ie_max:11.0, alt:64,  alt_a:96,  alt_max:128,  perm:.00,bs:16,sepBS:5,fDCT:21,aDCT:600, nom:'Núcleo'} // ie/alt base y ampliado confirmados (art. 47). ie_max 11.0 / alt_max 128 según COM-48-2024 — PENDIENTE verificar texto oficial
 };
 
 // Precios venta apartamentos Lab 1 UMBRAL (USD/m², 2025)
@@ -1245,7 +1247,7 @@ const SM = {q:4252.28, usd:557, fuente:'Mintrab · AG 256-2025 · ene 2026'};
 const TC = 7.625; // Q/USD referencia Banguat 2026
 
 const CONTEXTO_G = {
-  G1:{titulo:'G1 — Zona rural o de muy baja densidad',texto:'G1 forma parte del Cinturón Ecológico Metropolitano y se rige por su propio reglamento (parámetros de esta calculadora: provisionales). No está pensada para densificar. En predios con varias zonas G, la edificabilidad de las franjas G1/G2 normalmente se traslada a la parte G3-G5 del predio — verificar con la DCT.',color:'#7bc142'},
+  G1:{titulo:'G1 — Zona rural o de muy baja densidad',texto:'G1 forma parte del Cinturón Ecológico Metropolitano: son terrenos con pendiente natural de más de 20° y hasta 40°. Sus parámetros están en el art. 43 del POT (IE 1.2, 70% permeable); su delimitación y gestión se rigen además por un reglamento específico. No está pensada para densificar. En predios con varias zonas G, la edificabilidad de las franjas G1/G2 normalmente se traslada a la parte G3-G5 del predio — verificar con la DCT.',color:'#7bc142'},
   G2:{titulo:'G2 — Zona semiurbana',texto:'G2 marca la transición entre lo rural y lo urbano. IE 1.8, permeabilidad 40%. Permite vivienda unifamiliar o dúplex. En Ciudad de Guatemala suelen ser zonas periféricas en proceso de urbanización. El precio del suelo refleja ese potencial limitado.',color:'#b8d84a'},
   G3:{titulo:'G3 — Zona urbana consolidada',texto:'G3 es donde el POT imagina la densificación equilibrada. IE 2.7, altura 16m, permeabilidad mínima del 10%. Permite proyectos de 4-8 niveles. La mayoría de desarrollos residenciales activos en Ciudad de Guatemala están en zonas G3. Dato clave: los sótanos NO computan en el IE (COM-030-08, Art.46: límite 1.20m sobre nivel natural del terreno).',color:'#f5d800'},
   G4:{titulo:'G4 — Zona de alta densidad',texto:'G4 permite IE base 4.0 y altura base 32m. Con incentivos estándar: IE 6.0 y altura 48m. Con escenario maximizado (COM-48-2024, aportación urbanística + JOT): IE hasta 9.0 y altura hasta 96m. La altura real puede ser menor por restricciones DGAC — verificar por ubicación. Según reforma 2025 al reglamento de estacionamientos: estacionamientos ≤50% del proyecto podrían no computar en IE hasta dic. 2030 — verificar aplicación con DCT. Sótanos no computan en IE (COM-030-08, Art.46).',color:'#f5941d'},
@@ -1658,7 +1660,7 @@ function calcLite(){
   document.getElementById('l-tipo').innerHTML=tipoHtml;
 
   document.getElementById('l-frac').textContent=
-    `Frente mínimo DCT: ${g.fDCT}m. Superficie efectiva mínima DCT: ${fmt(g.aDCT)} m²${zona==='G3'||zona==='G1'?' (valor provisional — verificar con la DCT)':''}. Consultá siempre en vu.muniguate.com — el mapa POT cambia y puede haber condiciones especiales en tu predio específico.`;
+    `Frente mínimo DCT: ${g.fDCT}m. Superficie efectiva mínima DCT: ${fmt(g.aDCT)} m². Consultá siempre en vu.muniguate.com — el mapa POT cambia y puede haber condiciones especiales en tu predio específico.`;
 }
 
 // ==================== PRO ====================
