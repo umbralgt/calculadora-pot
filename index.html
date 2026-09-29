@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora POT · UMBRAL</title>
-<!-- V12 · visitas por m² (COM-03-2009 Anexo I) · V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
+<!-- V13 · medidas del predio y zona postal desde el mapa · V12 · visitas por m² (COM-03-2009 Anexo I) · V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -2185,7 +2185,12 @@ function irATerreno(){
   const area      = params.get('area');      // m² del terreno
   const ie        = params.get('ie');        // IE máximo
   const alt       = params.get('alt');       // altura permitida
-  const zonaPost  = params.get('zona_postal'); // zona municipal
+  // V13: el mapa manda la zona como número ('10'); los selects usan 'z10' / 'z01'
+  const zpRaw     = params.get('zona_postal');
+  const zonaPost  = zpRaw ? (String(zpRaw).startsWith('z') ? zpRaw : 'z' + String(parseInt(zpRaw)).padStart(2,'0')) : null;
+  // V13: medidas reales del predio calculadas desde el Mapa POT
+  const anchoP    = parseFloat(params.get('ancho')) || null;
+  const largoP    = parseFloat(params.get('largo')) || null;
   const modo      = params.get('modo');      // 'lite' | 'pro' | 'tasador'
 
   if (!zona && !area) return; // nada que pre-llenar
@@ -2212,7 +2217,7 @@ function irATerreno(){
     if (la) la.value = area;
     // Estimar frente como raíz cuadrada del área (lote cuadrado aproximado)
     const lf = document.getElementById('l-frente');
-    if (lf && !lf.value) lf.value = Math.round(Math.sqrt(parseFloat(area)));
+    if (lf && !lf.value) lf.value = anchoP ? Math.round(anchoP) : Math.round(Math.sqrt(parseFloat(area)));
   }
 
   // Pre-llenar campos Pro
@@ -2229,8 +2234,8 @@ function irATerreno(){
     const side = Math.round(Math.sqrt(parseFloat(area)));
     const pw = document.getElementById('p-ancho');
     const pl = document.getElementById('p-largo');
-    if (pw && !pw.value) pw.value = side;
-    if (pl && !pl.value) pl.value = side;
+    if (pw && !pw.value) pw.value = anchoP ? Math.round(anchoP) : side;
+    if (pl && !pl.value) pl.value = largoP ? Math.round(largoP) : side;
   }
   // V10: 'alt' del mapa es la altura máxima permitida, NO la altura piso-techo.
   // No se escribe en p-alt; la altura sale de la zona G.
@@ -2253,8 +2258,8 @@ function irATerreno(){
     const side = Math.round(Math.sqrt(parseFloat(area)));
     const tw = document.getElementById('t-ancho');
     const tl = document.getElementById('t-largo');
-    if (tw && !tw.value) tw.value = side;
-    if (tl && !tl.value) tl.value = side;
+    if (tw && !tw.value) tw.value = anchoP ? Math.round(anchoP) : side;
+    if (tl && !tl.value) tl.value = largoP ? Math.round(largoP) : side;
   }
   if (zonaPost) {
     const tzp = document.getElementById('t-zp');
@@ -2283,6 +2288,7 @@ function irATerreno(){
     if (zona) parts.push(`Zona ${zona}`);
     if (area) parts.push(`${parseInt(area).toLocaleString('es-GT')} m²`);
     if (alt) parts.push(`altura permitida ${alt} m`);
+    if (anchoP && largoP) parts.push(`~${Math.round(anchoP)} × ${Math.round(largoP)} m`);
     banner.innerHTML = `
       <span>Datos cargados desde el Mapa POT · ${parts.join(' · ')}</span>
       <a href="https://mapa-pot.umbralgt.com" style="color:#0a0a0a;font-weight:700;font-size:10px;letter-spacing:0.04em;text-transform:uppercase;text-decoration:none;white-space:nowrap">← Volver al mapa</a>
