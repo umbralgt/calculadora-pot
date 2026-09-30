@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora POT · UMBRAL</title>
-<!-- V15 · motor compartido (pot-motor.js), parqueos 1/2/3, botón Ver en 3D · V14 · parámetros verificados con el reglamento (altura ampliada G1/G2, bloques y separaciones por zona) · V13 · medidas del predio y zona postal desde el mapa · V12 · visitas por m² (COM-03-2009 Anexo I) · V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
+<!-- V16 · campos obligatorios marcados y señalados en rojo · V15 · motor compartido (pot-motor.js), parqueos 1/2/3, botón Ver en 3D · V14 · parámetros verificados con el reglamento (altura ampliada G1/G2, bloques y separaciones por zona) · V13 · medidas del predio y zona postal desde el mapa · V12 · visitas por m² (COM-03-2009 Anexo I) · V10 · sótano por plazas, costos del desarrollador, IVA neto, motor único Pro/Tasador -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -140,6 +140,10 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
 .tipo-box{border:1.5px solid #000;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:12px;line-height:1.5}
 
 /* Placeholder */
+.field-input.falta{border-color:#c0392b!important;box-shadow:0 0 0 3px rgba(192,57,43,.15);background:#fff7f6}
+.ast{color:#c0392b;font-weight:700;margin-right:4px}
+.req-nota{font-size:11px;color:#888;margin:4px 0 8px}
+.placeholder-text.ph-falta{color:#c0392b;border-color:#e8b4ad;background:#fff7f6}
 .placeholder-text{text-align:center;padding:28px 16px;color:#888;font-size:12px;line-height:1.8;border:1.5px dashed #d0d0d0;border-radius:8px;margin-top:8px}
 
 /* Conditions box */
@@ -284,7 +288,7 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
     </select>
   </div>
 
-  <button class="btn-primary" onclick="calcLite()">Ver orientación POT</button>
+  <button class="btn-primary" onclick="INTENTO.lite=true;calcLite()">Ver orientación POT</button>
 
   <div id="l-resultado" style="display:none">
     <div class="sep"></div>
@@ -602,7 +606,7 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
   <div id="aviso-g3-max" style="display:none;background:#fff7da;border:1.5px solid #c79200;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:11px;color:#c79200;line-height:1.5">
     <strong>Escenario maximizado no aplica en G1, G2 y G3.</strong> El COM-48-2024 solo amplía IE y altura aumentada para G4 y G5. En G3, G2 y G1 el escenario maximizado usa los parámetros ampliados estándar (IE ampliado, altura ampliada por incentivos regulares).
   </div>
-  <button class="btn-primary" onclick="calcPro()">Calcular análisis de proyecto</button>
+  <button class="btn-primary" onclick="INTENTO.pro=true;calcPro()">Calcular análisis de proyecto</button>
 
   <div id="p-resultado" style="display:none">
     <div class="sep"></div>
@@ -879,7 +883,7 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
   </details>
 
 
-  <button class="btn-primary" onclick="calcTasador()">Calcular valor máximo del terreno</button>
+  <button class="btn-primary" onclick="INTENTO.tas=true;calcTasador()">Calcular valor máximo del terreno</button>
 
   <div id="t-resultado" style="display:none">
     <div class="sep"></div>
@@ -969,7 +973,7 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
       <div><input type="number" class="field-input" id="m-area-v2" placeholder="v²" min="50" oninput="syncVarasM('v2')"><div class="field-help">o varas cuadradas</div></div>
     </div>
   </div>
-  <button class="btn-primary" onclick="calcTerreno()">Ver cuánto podría valer</button>
+  <button class="btn-primary" onclick="INTENTO.ter=true;calcTerreno()">Ver cuánto podría valer</button>
 
   <div id="m-resultado" style="display:none">
     <div class="sep"></div>
@@ -1002,6 +1006,34 @@ details.adv .adv-body{padding:4px 0 2px;border-top:1px solid #e0e0e0}
 const {POT, LAB1_VENTA, paramsEscenario, visitasNorma, estacionamientos, calcSotanoV10, costosProyecto,
        programaAuto, evaluarProyecto, valorResidual} = window.POTMotor;
 const IVA_TASA = 0.12;
+
+// ==================== CAMPOS OBLIGATORIOS · V16 ====================
+// Solo se marcan en rojo después de que el usuario toca "Calcular".
+const INTENTO = {lite:false, pro:false, tas:false, ter:false};
+const NOMBRES_CAMPO = {
+  'l-zona':'la zona G', 'l-area':'el área del terreno',
+  'p-g':'la zona G', 'p-area':'el área del terreno', 'p-nu':'el número de unidades', 'p-au':'el área por unidad',
+  't-g':'la zona G', 't-area':'el área del terreno', 't-nu':'el número de unidades', 't-au':'el área por unidad',
+  't-pm2v':'el precio de venta (se carga solo al elegir la zona postal)', 't-zp':'la zona postal',
+  'm-g':'la zona G', 'm-zp':'la zona postal', 'm-area':'el área del terreno'
+};
+function faltantes(ids){
+  return ids.filter(id => { const el = document.getElementById(id); if(!el) return false;
+    return el.tagName === 'SELECT' ? !el.value : !(parseFloat(el.value) > 0); });
+}
+function enLista(arr){ return arr.length < 2 ? arr.join('') : arr.slice(0,-1).join(', ') + ' y ' + arr[arr.length-1]; }
+function avisarFaltantes(tab, ids, phId){
+  const f = faltantes(ids), intento = INTENTO[tab], ph = document.getElementById(phId);
+  ids.forEach(id => { const el = document.getElementById(id); if(el) el.classList.toggle('falta', intento && f.includes(id)); });
+  if(f.length && ph){
+    ph.innerHTML = intento
+      ? '<strong>Falta completar ' + enLista(f.map(id => NOMBRES_CAMPO[id])) + '.</strong><br>Los campos marcados en rojo son obligatorios.'
+      : 'Completá los campos marcados con <span class="ast">*</span> para ver el resultado.';
+    ph.classList.toggle('ph-falta', intento);
+    if(intento){ const el = document.getElementById(f[0]); if(el && el.offsetParent !== null){ el.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(() => el.focus({preventScroll:true}), 400); } }
+  } else if(ph){ ph.classList.remove('ph-falta'); }
+  return f;
+}
 
 // ==================== ENLACE AL MODELO 3D · V15 ====================
 const URL_3D = 'https://terreno3d.umbralgt.com';
@@ -1459,7 +1491,7 @@ function calcLite(){
   const uso=document.getElementById('l-uso').value;
 
   if(!zona||!area){
-    document.getElementById('l-placeholder').textContent='Ingresá la zona G y el área del terreno.';
+    avisarFaltantes('lite', ['l-zona','l-area'], 'l-placeholder');
     document.getElementById('l-resultado').style.display='none';
     document.getElementById('l-placeholder').style.display='block';
     return;
@@ -1548,7 +1580,9 @@ function calcPro(){
   if(!zonaG||!area||!nu||!au){
     document.getElementById('p-resultado').style.display='none';
     document.getElementById('p-placeholder').style.display='block';
-    document.getElementById('p-placeholder').textContent='Completá zona G, área, número de unidades y área por unidad.';
+    const reqP = MODO_PRO==='explorar' ? ['p-g','p-area'] : ['p-g','p-area','p-nu','p-au'];
+    if(!avisarFaltantes('pro', reqP, 'p-placeholder').length)
+      document.getElementById('p-placeholder').textContent='Con estos datos no cabe un proyecto de apartamentos: probá con unidades más pequeñas o revisá el área.';
     return;
   }
   document.getElementById('p-resultado').style.display='block';
@@ -1801,7 +1835,9 @@ function calcTasador(){
   if(!zonaG||!area||!nu||!au||!pm2v){
     document.getElementById('t-resultado').style.display='none';
     document.getElementById('t-placeholder').style.display='block';
-    document.getElementById('t-placeholder').textContent='Completá zona G, área, unidades y precio de venta de referencia.';
+    const reqT = MODO_TAS==='vend' ? ['t-g','t-area','t-zp'] : ['t-g','t-area','t-nu','t-au','t-pm2v'];
+    if(!avisarFaltantes('tas', reqT, 't-placeholder').length)
+      document.getElementById('t-placeholder').textContent='Con estos datos no cabe un proyecto de apartamentos: probá con unidades más pequeñas o revisá el área.';
     return;
   }
   document.getElementById('t-resultado').style.display='block';
@@ -1959,8 +1995,7 @@ function calcTerreno(){
   const zonaP=document.getElementById('m-zp').value;
   const area=leerNum('m-area',0);
   const res=document.getElementById('m-resultado'), ph=document.getElementById('m-placeholder');
-  const faltan=[]; if(!zonaG) faltan.push('la zona G'); if(!zonaP) faltan.push('la zona postal'); if(!area) faltan.push('el área');
-  if(faltan.length){ res.style.display='none'; ph.style.display='block'; ph.textContent='Falta '+faltan.join(', ')+'.'; return; }
+  if(avisarFaltantes('ter', ['m-g','m-zp','m-area'], 'm-placeholder').length){ res.style.display='none'; ph.style.display='block'; return; }
   ph.style.display='none'; res.style.display='block';
   document.getElementById('m-3d').href = link3D({zona:zonaG, area, zp:zonaP, pu:1, esc:'base'});
 
@@ -2467,6 +2502,22 @@ const AYUDA = {
 };
 
 let helpActivo = null;
+
+// V16: marcar los campos obligatorios con * y quitar el rojo al completarlos
+(function(){
+  ['l-zona','l-area','p-g','p-area','p-nu','p-au','t-g','t-area','t-nu','t-au','t-pm2v','m-g','m-zp','m-area'].forEach(id => {
+    const el = document.getElementById(id); if(!el) return;
+    el.setAttribute('aria-required','true');
+    const grupo = el.closest('.field-group'), lab = grupo && grupo.querySelector('.field-label');
+    if(lab && !lab.querySelector('.ast')){ const a = document.createElement('span'); a.className='ast'; a.textContent=' *'; a.setAttribute('aria-hidden','true');
+      const hi = lab.querySelector('.help-icon'); hi ? lab.insertBefore(a, hi) : lab.appendChild(a); }
+    const limpiar = () => { if(!faltantes([id]).length) el.classList.remove('falta'); };
+    el.addEventListener('input', limpiar); el.addEventListener('change', limpiar);
+  });
+  const tzp = document.getElementById('t-zp');
+  if(tzp) tzp.addEventListener('change', () => { tzp.classList.remove('falta'); setTimeout(() => { const pv=document.getElementById('t-pm2v'); if(pv && parseFloat(pv.value)>0) pv.classList.remove('falta'); }, 50); });
+  document.querySelectorAll('.btn-primary[onclick^="INTENTO"]').forEach(b => b.insertAdjacentHTML('beforebegin', '<div class="req-nota">Los campos con <span class="ast">*</span> son obligatorios.</div>'));
+})();
 
 function showHelp(id, event){
   event.stopPropagation();
